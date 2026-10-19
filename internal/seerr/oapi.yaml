@@ -8,6 +8,7 @@ output-options:
     - search
     - request
     - users
+    - auth
     - movies
     - tv
   overlay:

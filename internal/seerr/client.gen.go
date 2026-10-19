@@ -1069,6 +1069,37 @@ type UserSettingsNotifications struct {
 	TelegramSendSilently     *bool                   `json:"telegramSendSilently,omitempty"`
 }
 
+// PostAuthJellyfinJSONBody defines parameters for PostAuthJellyfin.
+type PostAuthJellyfinJSONBody struct {
+	Email      *string  `json:"email,omitempty"`
+	Hostname   *string  `json:"hostname,omitempty"`
+	Password   string   `json:"password"`
+	ServerType *float32 `json:"serverType,omitempty"`
+	Username   string   `json:"username"`
+}
+
+// PostAuthJellyfinQuickconnectAuthenticateJSONBody defines parameters for PostAuthJellyfinQuickconnectAuthenticate.
+type PostAuthJellyfinQuickconnectAuthenticateJSONBody struct {
+	Secret string `json:"secret"`
+}
+
+// GetAuthJellyfinQuickconnectCheckParams defines parameters for GetAuthJellyfinQuickconnectCheck.
+type GetAuthJellyfinQuickconnectCheckParams struct {
+	// Secret The secret returned from the initiate endpoint
+	Secret string `form:"secret" json:"secret"`
+}
+
+// PostAuthLocalJSONBody defines parameters for PostAuthLocal.
+type PostAuthLocalJSONBody struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// PostAuthPlexJSONBody defines parameters for PostAuthPlex.
+type PostAuthPlexJSONBody struct {
+	AuthToken string `json:"authToken"`
+}
+
 // PostAuthResetPasswordJSONBody defines parameters for PostAuthResetPassword.
 type PostAuthResetPasswordJSONBody struct {
 	Email string `json:"email"`
@@ -1502,6 +1533,18 @@ type PostUserUserIdSettingsPermissionsJSONBody struct {
 type GetUserUserIdWatchlistParams struct {
 	Page *float32 `form:"page,omitempty" json:"page,omitempty"`
 }
+
+// PostAuthJellyfinJSONRequestBody defines body for PostAuthJellyfin for application/json ContentType.
+type PostAuthJellyfinJSONRequestBody PostAuthJellyfinJSONBody
+
+// PostAuthJellyfinQuickconnectAuthenticateJSONRequestBody defines body for PostAuthJellyfinQuickconnectAuthenticate for application/json ContentType.
+type PostAuthJellyfinQuickconnectAuthenticateJSONRequestBody PostAuthJellyfinQuickconnectAuthenticateJSONBody
+
+// PostAuthLocalJSONRequestBody defines body for PostAuthLocal for application/json ContentType.
+type PostAuthLocalJSONRequestBody PostAuthLocalJSONBody
+
+// PostAuthPlexJSONRequestBody defines body for PostAuthPlex for application/json ContentType.
+type PostAuthPlexJSONRequestBody PostAuthPlexJSONBody
 
 // PostAuthResetPasswordJSONRequestBody defines body for PostAuthResetPassword for application/json ContentType.
 type PostAuthResetPasswordJSONRequestBody PostAuthResetPasswordJSONBody
@@ -1990,12 +2033,105 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 // The interface specification for the client above.
 type ClientInterface interface {
 
+	// PostAuthJellyfinWithBody Sign in using a Jellyfin username and password
+	//
+	// Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /auth/jellyfin (the `PostAuthJellyfin` operationId).
+	PostAuthJellyfinWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthJellyfin Sign in using a Jellyfin username and password
+	//
+	// Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /auth/jellyfin (the `PostAuthJellyfin` operationId).
+	PostAuthJellyfin(ctx context.Context, body PostAuthJellyfinJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthJellyfinQuickconnectAuthenticateWithBody Authenticate with Quick Connect
+	//
+	// Completes the Quick Connect authentication flow and creates a user session.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /auth/jellyfin/quickconnect/authenticate (the `PostAuthJellyfinQuickconnectAuthenticate` operationId).
+	PostAuthJellyfinQuickconnectAuthenticateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthJellyfinQuickconnectAuthenticate Authenticate with Quick Connect
+	//
+	// Completes the Quick Connect authentication flow and creates a user session.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /auth/jellyfin/quickconnect/authenticate (the `PostAuthJellyfinQuickconnectAuthenticate` operationId).
+	PostAuthJellyfinQuickconnectAuthenticate(ctx context.Context, body PostAuthJellyfinQuickconnectAuthenticateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAuthJellyfinQuickconnectCheck Check Quick Connect authorization status
+	//
+	// Checks if the Quick Connect code has been authorized by the user.
+	//
+	// Corresponds with GET /auth/jellyfin/quickconnect/check (the `GetAuthJellyfinQuickconnectCheck` operationId).
+	GetAuthJellyfinQuickconnectCheck(ctx context.Context, params *GetAuthJellyfinQuickconnectCheckParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthJellyfinQuickconnectInitiate Initiate Jellyfin Quick Connect
+	//
+	// Initiates a Quick Connect session and returns a code for the user to authorize on their Jellyfin server.
+	//
+	// Corresponds with POST /auth/jellyfin/quickconnect/initiate (the `PostAuthJellyfinQuickconnectInitiate` operationId).
+	PostAuthJellyfinQuickconnectInitiate(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthLocalWithBody Sign in using a local account
+	//
+	// Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /auth/local (the `PostAuthLocal` operationId).
+	PostAuthLocalWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthLocal Sign in using a local account
+	//
+	// Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /auth/local (the `PostAuthLocal` operationId).
+	PostAuthLocal(ctx context.Context, body PostAuthLocalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthLogout Sign out and clear session cookie
+	//
+	// Completely clear the session cookie and associated values, effectively signing the user out.
+	//
+	// Corresponds with POST /auth/logout (the `PostAuthLogout` operationId).
+	PostAuthLogout(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetAuthMe Get logged-in user
 	//
 	// Returns the currently logged-in user.
 	//
 	// Corresponds with GET /auth/me (the `GetAuthMe` operationId).
 	GetAuthMe(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthPlexWithBody Sign in using a Plex token
+	//
+	// Takes an `authToken` (Plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /auth/plex (the `PostAuthPlex` operationId).
+	PostAuthPlexWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostAuthPlex Sign in using a Plex token
+	//
+	// Takes an `authToken` (Plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /auth/plex (the `PostAuthPlex` operationId).
+	PostAuthPlex(ctx context.Context, body PostAuthPlexJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PostAuthResetPasswordWithBody Send a reset password email
 	//
@@ -2703,6 +2839,171 @@ type ClientInterface interface {
 	GetUserUserIdWatchlist(ctx context.Context, userId float32, params *GetUserUserIdWatchlistParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
+// PostAuthJellyfinWithBody Sign in using a Jellyfin username and password
+//
+// Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /auth/jellyfin (the `PostAuthJellyfin` operationId).
+func (c *Client) PostAuthJellyfinWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthJellyfinRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthJellyfin Sign in using a Jellyfin username and password
+//
+// Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /auth/jellyfin (the `PostAuthJellyfin` operationId).
+func (c *Client) PostAuthJellyfin(ctx context.Context, body PostAuthJellyfinJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthJellyfinRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthJellyfinQuickconnectAuthenticateWithBody Authenticate with Quick Connect
+//
+// Completes the Quick Connect authentication flow and creates a user session.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /auth/jellyfin/quickconnect/authenticate (the `PostAuthJellyfinQuickconnectAuthenticate` operationId).
+func (c *Client) PostAuthJellyfinQuickconnectAuthenticateWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthJellyfinQuickconnectAuthenticateRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthJellyfinQuickconnectAuthenticate Authenticate with Quick Connect
+//
+// Completes the Quick Connect authentication flow and creates a user session.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /auth/jellyfin/quickconnect/authenticate (the `PostAuthJellyfinQuickconnectAuthenticate` operationId).
+func (c *Client) PostAuthJellyfinQuickconnectAuthenticate(ctx context.Context, body PostAuthJellyfinQuickconnectAuthenticateJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthJellyfinQuickconnectAuthenticateRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetAuthJellyfinQuickconnectCheck Check Quick Connect authorization status
+//
+// Checks if the Quick Connect code has been authorized by the user.
+//
+// Corresponds with GET /auth/jellyfin/quickconnect/check (the `GetAuthJellyfinQuickconnectCheck` operationId).
+func (c *Client) GetAuthJellyfinQuickconnectCheck(ctx context.Context, params *GetAuthJellyfinQuickconnectCheckParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAuthJellyfinQuickconnectCheckRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthJellyfinQuickconnectInitiate Initiate Jellyfin Quick Connect
+//
+// Initiates a Quick Connect session and returns a code for the user to authorize on their Jellyfin server.
+//
+// Corresponds with POST /auth/jellyfin/quickconnect/initiate (the `PostAuthJellyfinQuickconnectInitiate` operationId).
+func (c *Client) PostAuthJellyfinQuickconnectInitiate(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthJellyfinQuickconnectInitiateRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthLocalWithBody Sign in using a local account
+//
+// Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /auth/local (the `PostAuthLocal` operationId).
+func (c *Client) PostAuthLocalWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthLocalRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthLocal Sign in using a local account
+//
+// Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /auth/local (the `PostAuthLocal` operationId).
+func (c *Client) PostAuthLocal(ctx context.Context, body PostAuthLocalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthLocalRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthLogout Sign out and clear session cookie
+//
+// Completely clear the session cookie and associated values, effectively signing the user out.
+//
+// Corresponds with POST /auth/logout (the `PostAuthLogout` operationId).
+func (c *Client) PostAuthLogout(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthLogoutRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetAuthMe Get logged-in user
 //
 // Returns the currently logged-in user.
@@ -2710,6 +3011,44 @@ type ClientInterface interface {
 // Corresponds with GET /auth/me (the `GetAuthMe` operationId).
 func (c *Client) GetAuthMe(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetAuthMeRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthPlexWithBody Sign in using a Plex token
+//
+// Takes an `authToken` (Plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /auth/plex (the `PostAuthPlex` operationId).
+func (c *Client) PostAuthPlexWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthPlexRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostAuthPlex Sign in using a Plex token
+//
+// Takes an `authToken` (Plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /auth/plex (the `PostAuthPlex` operationId).
+func (c *Client) PostAuthPlex(ctx context.Context, body PostAuthPlexJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAuthPlexRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -4295,6 +4634,230 @@ func (c *Client) GetUserUserIdWatchlist(ctx context.Context, userId float32, par
 	return c.Client.Do(req)
 }
 
+// NewPostAuthJellyfinRequest calls the generic PostAuthJellyfin builder with application/json body
+func NewPostAuthJellyfinRequest(server string, body PostAuthJellyfinJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostAuthJellyfinRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostAuthJellyfinRequestWithBody constructs an http.Request for the PostAuthJellyfin method, with any body, and a specified content type
+func NewPostAuthJellyfinRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/auth/jellyfin")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPostAuthJellyfinQuickconnectAuthenticateRequest calls the generic PostAuthJellyfinQuickconnectAuthenticate builder with application/json body
+func NewPostAuthJellyfinQuickconnectAuthenticateRequest(server string, body PostAuthJellyfinQuickconnectAuthenticateJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostAuthJellyfinQuickconnectAuthenticateRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostAuthJellyfinQuickconnectAuthenticateRequestWithBody constructs an http.Request for the PostAuthJellyfinQuickconnectAuthenticate method, with any body, and a specified content type
+func NewPostAuthJellyfinQuickconnectAuthenticateRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/auth/jellyfin/quickconnect/authenticate")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetAuthJellyfinQuickconnectCheckRequest constructs an http.Request for the GetAuthJellyfinQuickconnectCheck method
+func NewGetAuthJellyfinQuickconnectCheckRequest(server string, params *GetAuthJellyfinQuickconnectCheckParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/auth/jellyfin/quickconnect/check")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if queryFrag, err := runtime.StyleParamWithOptions("form", true, "secret", params.Secret, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			return nil, err
+		} else {
+			for _, qp := range strings.Split(queryFrag, "&") {
+				rawQueryFragments = append(rawQueryFragments, qp)
+			}
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostAuthJellyfinQuickconnectInitiateRequest constructs an http.Request for the PostAuthJellyfinQuickconnectInitiate method
+func NewPostAuthJellyfinQuickconnectInitiateRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/auth/jellyfin/quickconnect/initiate")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostAuthLocalRequest calls the generic PostAuthLocal builder with application/json body
+func NewPostAuthLocalRequest(server string, body PostAuthLocalJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostAuthLocalRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostAuthLocalRequestWithBody constructs an http.Request for the PostAuthLocal method, with any body, and a specified content type
+func NewPostAuthLocalRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/auth/local")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPostAuthLogoutRequest constructs an http.Request for the PostAuthLogout method
+func NewPostAuthLogoutRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/auth/logout")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetAuthMeRequest constructs an http.Request for the GetAuthMe method
 func NewGetAuthMeRequest(server string) (*http.Request, error) {
 	var err error
@@ -4318,6 +4881,46 @@ func NewGetAuthMeRequest(server string) (*http.Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewPostAuthPlexRequest calls the generic PostAuthPlex builder with application/json body
+func NewPostAuthPlexRequest(server string, body PostAuthPlexJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostAuthPlexRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostAuthPlexRequestWithBody constructs an http.Request for the PostAuthPlex method, with any body, and a specified content type
+func NewPostAuthPlexRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/auth/plex")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -8505,6 +9108,87 @@ func WithBaseURL(baseURL string) ClientOption {
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
 
+	// PostAuthJellyfinWithBodyWithResponse Sign in using a Jellyfin username and password
+	//
+	// Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/jellyfin (the `PostAuthJellyfin` operationId).
+	PostAuthJellyfinWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAuthJellyfinResponse, error)
+
+	// PostAuthJellyfinWithResponse Sign in using a Jellyfin username and password
+	//
+	// Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/jellyfin (the `PostAuthJellyfin` operationId).
+	PostAuthJellyfinWithResponse(ctx context.Context, body PostAuthJellyfinJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAuthJellyfinResponse, error)
+
+	// PostAuthJellyfinQuickconnectAuthenticateWithBodyWithResponse Authenticate with Quick Connect
+	//
+	// Completes the Quick Connect authentication flow and creates a user session.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/jellyfin/quickconnect/authenticate (the `PostAuthJellyfinQuickconnectAuthenticate` operationId).
+	PostAuthJellyfinQuickconnectAuthenticateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAuthJellyfinQuickconnectAuthenticateResponse, error)
+
+	// PostAuthJellyfinQuickconnectAuthenticateWithResponse Authenticate with Quick Connect
+	//
+	// Completes the Quick Connect authentication flow and creates a user session.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/jellyfin/quickconnect/authenticate (the `PostAuthJellyfinQuickconnectAuthenticate` operationId).
+	PostAuthJellyfinQuickconnectAuthenticateWithResponse(ctx context.Context, body PostAuthJellyfinQuickconnectAuthenticateJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAuthJellyfinQuickconnectAuthenticateResponse, error)
+
+	// GetAuthJellyfinQuickconnectCheckWithResponse Check Quick Connect authorization status
+	//
+	// Checks if the Quick Connect code has been authorized by the user.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /auth/jellyfin/quickconnect/check (the `GetAuthJellyfinQuickconnectCheck` operationId).
+	GetAuthJellyfinQuickconnectCheckWithResponse(ctx context.Context, params *GetAuthJellyfinQuickconnectCheckParams, reqEditors ...RequestEditorFn) (*GetAuthJellyfinQuickconnectCheckResponse, error)
+
+	// PostAuthJellyfinQuickconnectInitiateWithResponse Initiate Jellyfin Quick Connect
+	//
+	// Initiates a Quick Connect session and returns a code for the user to authorize on their Jellyfin server.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/jellyfin/quickconnect/initiate (the `PostAuthJellyfinQuickconnectInitiate` operationId).
+	PostAuthJellyfinQuickconnectInitiateWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PostAuthJellyfinQuickconnectInitiateResponse, error)
+
+	// PostAuthLocalWithBodyWithResponse Sign in using a local account
+	//
+	// Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/local (the `PostAuthLocal` operationId).
+	PostAuthLocalWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAuthLocalResponse, error)
+
+	// PostAuthLocalWithResponse Sign in using a local account
+	//
+	// Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/local (the `PostAuthLocal` operationId).
+	PostAuthLocalWithResponse(ctx context.Context, body PostAuthLocalJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAuthLocalResponse, error)
+
+	// PostAuthLogoutWithResponse Sign out and clear session cookie
+	//
+	// Completely clear the session cookie and associated values, effectively signing the user out.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/logout (the `PostAuthLogout` operationId).
+	PostAuthLogoutWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PostAuthLogoutResponse, error)
+
 	// GetAuthMeWithResponse Get logged-in user
 	//
 	// Returns the currently logged-in user.
@@ -8513,6 +9197,24 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /auth/me (the `GetAuthMe` operationId).
 	GetAuthMeWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetAuthMeResponse, error)
+
+	// PostAuthPlexWithBodyWithResponse Sign in using a Plex token
+	//
+	// Takes an `authToken` (Plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/plex (the `PostAuthPlex` operationId).
+	PostAuthPlexWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAuthPlexResponse, error)
+
+	// PostAuthPlexWithResponse Sign in using a Plex token
+	//
+	// Takes an `authToken` (Plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /auth/plex (the `PostAuthPlex` operationId).
+	PostAuthPlexWithResponse(ctx context.Context, body PostAuthPlexJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAuthPlexResponse, error)
 
 	// PostAuthResetPasswordWithBodyWithResponse Send a reset password email
 	//
@@ -9326,6 +10028,276 @@ type ClientWithResponsesInterface interface {
 	GetUserUserIdWatchlistWithResponse(ctx context.Context, userId float32, params *GetUserUserIdWatchlistParams, reqEditors ...RequestEditorFn) (*GetUserUserIdWatchlistResponse, error)
 }
 
+type PostAuthJellyfinResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *User
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PostAuthJellyfinResponse) GetJSON200() *User {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r PostAuthJellyfinResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostAuthJellyfinResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostAuthJellyfinResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostAuthJellyfinResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PostAuthJellyfinQuickconnectAuthenticateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *User
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PostAuthJellyfinQuickconnectAuthenticateResponse) GetJSON200() *User {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r PostAuthJellyfinQuickconnectAuthenticateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostAuthJellyfinQuickconnectAuthenticateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostAuthJellyfinQuickconnectAuthenticateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostAuthJellyfinQuickconnectAuthenticateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetAuthJellyfinQuickconnectCheckResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		// Authenticated Example: false
+		Authenticated *bool `json:"authenticated,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetAuthJellyfinQuickconnectCheckResponse) GetJSON200() *struct {
+	// Authenticated Example: false
+	Authenticated *bool `json:"authenticated,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetAuthJellyfinQuickconnectCheckResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAuthJellyfinQuickconnectCheckResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAuthJellyfinQuickconnectCheckResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetAuthJellyfinQuickconnectCheckResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PostAuthJellyfinQuickconnectInitiateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		// Code Example: 123456
+		Code *string `json:"code,omitempty"`
+
+		// Secret Example: abc123def456
+		Secret *string `json:"secret,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PostAuthJellyfinQuickconnectInitiateResponse) GetJSON200() *struct {
+	// Code Example: 123456
+	Code *string `json:"code,omitempty"`
+
+	// Secret Example: abc123def456
+	Secret *string `json:"secret,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r PostAuthJellyfinQuickconnectInitiateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostAuthJellyfinQuickconnectInitiateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostAuthJellyfinQuickconnectInitiateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostAuthJellyfinQuickconnectInitiateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PostAuthLocalResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *User
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PostAuthLocalResponse) GetJSON200() *User {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r PostAuthLocalResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostAuthLocalResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostAuthLocalResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostAuthLocalResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PostAuthLogoutResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		// Status Example: ok
+		Status *string `json:"status,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PostAuthLogoutResponse) GetJSON200() *struct {
+	// Status Example: ok
+	Status *string `json:"status,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r PostAuthLogoutResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostAuthLogoutResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostAuthLogoutResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostAuthLogoutResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetAuthMeResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -9361,6 +10333,47 @@ func (r GetAuthMeResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetAuthMeResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PostAuthPlexResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *User
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PostAuthPlexResponse) GetJSON200() *User {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r PostAuthPlexResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostAuthPlexResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostAuthPlexResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostAuthPlexResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -12962,6 +13975,141 @@ func (r GetUserUserIdWatchlistResponse) ContentType() string {
 	return ""
 }
 
+// PostAuthJellyfinWithBodyWithResponse Sign in using a Jellyfin username and password
+//
+// Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/jellyfin (the `PostAuthJellyfin` operationId).
+func (c *ClientWithResponses) PostAuthJellyfinWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAuthJellyfinResponse, error) {
+	rsp, err := c.PostAuthJellyfinWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthJellyfinResponse(rsp)
+}
+
+// PostAuthJellyfinWithResponse Sign in using a Jellyfin username and password
+//
+// Takes the user's username and password to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the Jellyfin server, they will also have an account created, but without any permissions.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/jellyfin (the `PostAuthJellyfin` operationId).
+func (c *ClientWithResponses) PostAuthJellyfinWithResponse(ctx context.Context, body PostAuthJellyfinJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAuthJellyfinResponse, error) {
+	rsp, err := c.PostAuthJellyfin(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthJellyfinResponse(rsp)
+}
+
+// PostAuthJellyfinQuickconnectAuthenticateWithBodyWithResponse Authenticate with Quick Connect
+//
+// Completes the Quick Connect authentication flow and creates a user session.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/jellyfin/quickconnect/authenticate (the `PostAuthJellyfinQuickconnectAuthenticate` operationId).
+func (c *ClientWithResponses) PostAuthJellyfinQuickconnectAuthenticateWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAuthJellyfinQuickconnectAuthenticateResponse, error) {
+	rsp, err := c.PostAuthJellyfinQuickconnectAuthenticateWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthJellyfinQuickconnectAuthenticateResponse(rsp)
+}
+
+// PostAuthJellyfinQuickconnectAuthenticateWithResponse Authenticate with Quick Connect
+//
+// Completes the Quick Connect authentication flow and creates a user session.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/jellyfin/quickconnect/authenticate (the `PostAuthJellyfinQuickconnectAuthenticate` operationId).
+func (c *ClientWithResponses) PostAuthJellyfinQuickconnectAuthenticateWithResponse(ctx context.Context, body PostAuthJellyfinQuickconnectAuthenticateJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAuthJellyfinQuickconnectAuthenticateResponse, error) {
+	rsp, err := c.PostAuthJellyfinQuickconnectAuthenticate(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthJellyfinQuickconnectAuthenticateResponse(rsp)
+}
+
+// GetAuthJellyfinQuickconnectCheckWithResponse Check Quick Connect authorization status
+//
+// Checks if the Quick Connect code has been authorized by the user.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /auth/jellyfin/quickconnect/check (the `GetAuthJellyfinQuickconnectCheck` operationId).
+func (c *ClientWithResponses) GetAuthJellyfinQuickconnectCheckWithResponse(ctx context.Context, params *GetAuthJellyfinQuickconnectCheckParams, reqEditors ...RequestEditorFn) (*GetAuthJellyfinQuickconnectCheckResponse, error) {
+	rsp, err := c.GetAuthJellyfinQuickconnectCheck(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAuthJellyfinQuickconnectCheckResponse(rsp)
+}
+
+// PostAuthJellyfinQuickconnectInitiateWithResponse Initiate Jellyfin Quick Connect
+//
+// Initiates a Quick Connect session and returns a code for the user to authorize on their Jellyfin server.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/jellyfin/quickconnect/initiate (the `PostAuthJellyfinQuickconnectInitiate` operationId).
+func (c *ClientWithResponses) PostAuthJellyfinQuickconnectInitiateWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PostAuthJellyfinQuickconnectInitiateResponse, error) {
+	rsp, err := c.PostAuthJellyfinQuickconnectInitiate(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthJellyfinQuickconnectInitiateResponse(rsp)
+}
+
+// PostAuthLocalWithBodyWithResponse Sign in using a local account
+//
+// Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/local (the `PostAuthLocal` operationId).
+func (c *ClientWithResponses) PostAuthLocalWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAuthLocalResponse, error) {
+	rsp, err := c.PostAuthLocalWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthLocalResponse(rsp)
+}
+
+// PostAuthLocalWithResponse Sign in using a local account
+//
+// Takes an `email` and a `password` to log the user in. Generates a session cookie for use in further requests.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/local (the `PostAuthLocal` operationId).
+func (c *ClientWithResponses) PostAuthLocalWithResponse(ctx context.Context, body PostAuthLocalJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAuthLocalResponse, error) {
+	rsp, err := c.PostAuthLocal(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthLocalResponse(rsp)
+}
+
+// PostAuthLogoutWithResponse Sign out and clear session cookie
+//
+// Completely clear the session cookie and associated values, effectively signing the user out.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/logout (the `PostAuthLogout` operationId).
+func (c *ClientWithResponses) PostAuthLogoutWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PostAuthLogoutResponse, error) {
+	rsp, err := c.PostAuthLogout(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthLogoutResponse(rsp)
+}
+
 // GetAuthMeWithResponse Get logged-in user
 //
 // Returns the currently logged-in user.
@@ -12975,6 +14123,36 @@ func (c *ClientWithResponses) GetAuthMeWithResponse(ctx context.Context, reqEdit
 		return nil, err
 	}
 	return ParseGetAuthMeResponse(rsp)
+}
+
+// PostAuthPlexWithBodyWithResponse Sign in using a Plex token
+//
+// Takes an `authToken` (Plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/plex (the `PostAuthPlex` operationId).
+func (c *ClientWithResponses) PostAuthPlexWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAuthPlexResponse, error) {
+	rsp, err := c.PostAuthPlexWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthPlexResponse(rsp)
+}
+
+// PostAuthPlexWithResponse Sign in using a Plex token
+//
+// Takes an `authToken` (Plex token) to log the user in. Generates a session cookie for use in further requests. If the user does not exist, and there are no other users, then a user will be created with full admin privileges. If a user logs in with access to the main Plex server, they will also have an account created, but without any permissions.
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /auth/plex (the `PostAuthPlex` operationId).
+func (c *ClientWithResponses) PostAuthPlexWithResponse(ctx context.Context, body PostAuthPlexJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAuthPlexResponse, error) {
+	rsp, err := c.PostAuthPlex(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAuthPlexResponse(rsp)
 }
 
 // PostAuthResetPasswordWithBodyWithResponse Send a reset password email
@@ -14310,6 +15488,186 @@ func (c *ClientWithResponses) GetUserUserIdWatchlistWithResponse(ctx context.Con
 	return ParseGetUserUserIdWatchlistResponse(rsp)
 }
 
+// ParsePostAuthJellyfinResponse parses an HTTP response from a PostAuthJellyfinWithResponse call
+func ParsePostAuthJellyfinResponse(rsp *http.Response) (*PostAuthJellyfinResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostAuthJellyfinResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest User
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostAuthJellyfinQuickconnectAuthenticateResponse parses an HTTP response from a PostAuthJellyfinQuickconnectAuthenticateWithResponse call
+func ParsePostAuthJellyfinQuickconnectAuthenticateResponse(rsp *http.Response) (*PostAuthJellyfinQuickconnectAuthenticateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostAuthJellyfinQuickconnectAuthenticateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest User
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 403:
+		break // No content-type
+
+	case rsp.StatusCode == 500:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAuthJellyfinQuickconnectCheckResponse parses an HTTP response from a GetAuthJellyfinQuickconnectCheckWithResponse call
+func ParseGetAuthJellyfinQuickconnectCheckResponse(rsp *http.Response) (*GetAuthJellyfinQuickconnectCheckResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAuthJellyfinQuickconnectCheckResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Authenticated Example: false
+			Authenticated *bool `json:"authenticated,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 404:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
+// ParsePostAuthJellyfinQuickconnectInitiateResponse parses an HTTP response from a PostAuthJellyfinQuickconnectInitiateWithResponse call
+func ParsePostAuthJellyfinQuickconnectInitiateResponse(rsp *http.Response) (*PostAuthJellyfinQuickconnectInitiateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostAuthJellyfinQuickconnectInitiateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Code Example: 123456
+			Code *string `json:"code,omitempty"`
+
+			// Secret Example: abc123def456
+			Secret *string `json:"secret,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 500:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
+// ParsePostAuthLocalResponse parses an HTTP response from a PostAuthLocalWithResponse call
+func ParsePostAuthLocalResponse(rsp *http.Response) (*PostAuthLocalResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostAuthLocalResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest User
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostAuthLogoutResponse parses an HTTP response from a PostAuthLogoutWithResponse call
+func ParsePostAuthLogoutResponse(rsp *http.Response) (*PostAuthLogoutResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostAuthLogoutResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Status Example: ok
+			Status *string `json:"status,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetAuthMeResponse parses an HTTP response from a GetAuthMeWithResponse call
 func ParseGetAuthMeResponse(rsp *http.Response) (*GetAuthMeResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -14319,6 +15677,32 @@ func ParseGetAuthMeResponse(rsp *http.Response) (*GetAuthMeResponse, error) {
 	}
 
 	response := &GetAuthMeResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest User
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostAuthPlexResponse parses an HTTP response from a PostAuthPlexWithResponse call
+func ParsePostAuthPlexResponse(rsp *http.Response) (*PostAuthPlexResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostAuthPlexResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
