@@ -16,7 +16,11 @@ in front of it.
 - A request goes to Seerr on behalf of that user. A series is requested with every
   season.
 - The queue is read from Radarr and Sonarr directly. A series' episodes are folded into
-  one entry per season.
+  one entry per season. Below the downloads come the requests Seerr is still processing
+  with nothing downloading yet.
+- The page speaks English or Russian, whichever the browser's `Accept-Language` prefers,
+  and names movies and series in that language where TMDB has the name. Each links to its
+  page in Seerr.
 
 ## Run it
 
@@ -34,6 +38,7 @@ The image is `ghcr.io/mikluko/zeleerr`.
 | Variable | Default | Meaning |
 |---|---|---|
 | `SEERR_URL`, `SEERR_API_KEY` | | Seerr, without `/api/v1` |
+| `SEERR_PUBLIC_URL` | `SEERR_URL` | Seerr as the browser reaches it, for links |
 | `RADARR_URL`, `RADARR_API_KEY` | | Radarr |
 | `SONARR_URL`, `SONARR_API_KEY` | | Sonarr |
 | `ZELEERR_ADDR` | `:8080` | listen address |

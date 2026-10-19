@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/mikluko/zeleerr/internal/catalog"
 )
@@ -23,30 +22,47 @@ var assets embed.FS
 // Catalog is what the page needs of catalog.Catalog.
 type Catalog interface {
 	UserID(ctx context.Context, email string) (int, error)
-	Search(ctx context.Context, query string) ([]catalog.Title, error)
+	Search(ctx context.Context, lang, query string) ([]catalog.Title, error)
 	Request(ctx context.Context, userID int, mediaType string, tmdbID int) error
-	Queue(ctx context.Context) ([]catalog.Download, error)
+	Queue(ctx context.Context, lang string) ([]catalog.Download, error)
 }
 
 // Server is the HTTP side of zeleerr.
 type Server struct {
 	cat    Catalog
 	header string
+	seerr  string
 	log    *slog.Logger
 	tmpl   *template.Template
 }
 
 // New returns a Server that takes the signed-in user's email from the request
-// header userHeader, set by the authenticating proxy in front of it.
-func New(cat Catalog, userHeader string, log *slog.Logger) (*Server, error) {
-	tmpl, err := template.New("").Funcs(template.FuncMap{
-		"percent": func(p float64) int { return int(p * 100) },
-		"left":    formatLeft,
-	}).ParseFS(assets, "templates/*.html")
+// header userHeader, set by the authenticating proxy in front of it. Movies
+// and series link to their pages in the Seerr at seerrURL.
+func New(cat Catalog, userHeader, seerrURL string, log *slog.Logger) (*Server, error) {
+	s := &Server{cat: cat, header: userHeader, seerr: strings.TrimRight(seerrURL, "/"), log: log}
+	tmpl, err := template.New("").Funcs(s.funcs("en")).ParseFS(assets, "templates/*.html")
 	if err != nil {
 		return nil, err
 	}
-	return &Server{cat: cat, header: userHeader, log: log, tmpl: tmpl}, nil
+	s.tmpl = tmpl
+	return s, nil
+}
+
+// funcs are the template functions, those that speak bound to l.
+func (s *Server) funcs(l locale) template.FuncMap {
+	return template.FuncMap{
+		"percent": func(p float64) int { return int(p * 100) },
+		"seerr":   s.seerrLink,
+		"lang":    func() string { return string(l) },
+		"t":       l.t,
+		"left":    l.left,
+		"seasons": l.seasons,
+	}
+}
+
+func (s *Server) seerrLink(mediaType string, tmdbID int) string {
+	return fmt.Sprintf("%s/%s/%d", s.seerr, mediaType, tmdbID)
 }
 
 // Handler routes the page, its fragments, the static files and /healthz.
@@ -75,7 +91,7 @@ func (s *Server) identify(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		email := strings.TrimSpace(r.Header.Get(s.header))
 		if email == "" {
-			http.Error(w, "не удалось узнать, кто вы", http.StatusUnauthorized)
+			http.Error(w, localeOf(r).t("who"), http.StatusUnauthorized)
 			return
 		}
 		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), userKey{}, email)))
@@ -83,28 +99,28 @@ func (s *Server) identify(next http.Handler) http.Handler {
 }
 
 func (s *Server) page(w http.ResponseWriter, r *http.Request) {
-	s.render(w, "page", r.Context().Value(userKey{}))
+	s.render(w, r, "page", r.Context().Value(userKey{}))
 }
 
 func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 	q := strings.TrimSpace(r.URL.Query().Get("q"))
 	if q == "" {
-		s.render(w, "results", []catalog.Title(nil))
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		return
 	}
-	titles, err := s.cat.Search(r.Context(), q)
+	titles, err := s.cat.Search(r.Context(), string(localeOf(r)), q)
 	if err != nil {
 		s.fail(w, r, err)
 		return
 	}
-	s.render(w, "results", titles)
+	s.render(w, r, "results", titles)
 }
 
 func (s *Server) request(w http.ResponseWriter, r *http.Request) {
 	mediaType := r.FormValue("mediaType")
 	tmdbID, err := strconv.Atoi(r.FormValue("tmdbId"))
 	if err != nil || (mediaType != "movie" && mediaType != "tv") {
-		http.Error(w, "непонятная заявка", http.StatusBadRequest)
+		http.Error(w, localeOf(r).t("bad request"), http.StatusBadRequest)
 		return
 	}
 	uid, err := s.cat.UserID(r.Context(), r.Context().Value(userKey{}).(string))
@@ -116,21 +132,26 @@ func (s *Server) request(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, err)
 		return
 	}
-	s.render(w, "action", catalog.Title{MediaType: mediaType, TMDBID: tmdbID, Status: catalog.StatusPending})
+	s.render(w, r, "action", catalog.Title{MediaType: mediaType, TMDBID: tmdbID, Status: catalog.StatusPending})
 }
 
 func (s *Server) queue(w http.ResponseWriter, r *http.Request) {
-	downloads, err := s.cat.Queue(r.Context())
+	downloads, err := s.cat.Queue(r.Context(), string(localeOf(r)))
 	if err != nil {
 		s.fail(w, r, err)
 		return
 	}
-	s.render(w, "queue", downloads)
+	s.render(w, r, "queue", downloads)
 }
 
-func (s *Server) render(w http.ResponseWriter, name string, data any) {
+// render executes the template in the language of the request.
+func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, data any) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := s.tmpl.ExecuteTemplate(w, name, data); err != nil {
+	tmpl, err := s.tmpl.Clone()
+	if err == nil {
+		err = tmpl.Funcs(s.funcs(localeOf(r))).ExecuteTemplate(w, name, data)
+	}
+	if err != nil {
 		s.log.Error("render", "template", name, "err", err)
 	}
 }
@@ -139,22 +160,7 @@ func (s *Server) render(w http.ResponseWriter, name string, data any) {
 // result, so the page says what went wrong instead of silently not updating.
 func (s *Server) fail(w http.ResponseWriter, r *http.Request, err error) {
 	s.log.Error("request", "path", r.URL.Path, "err", err)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusBadGateway)
-	s.render(w, "error", nil)
-}
-
-// formatLeft renders a remaining download time the way a person says it.
-func formatLeft(d time.Duration) string {
-	switch {
-	case d <= 0:
-		return ""
-	case d < time.Minute:
-		return "меньше минуты"
-	case d < time.Hour:
-		return fmt.Sprintf("%d мин", int(d.Minutes()))
-	case d < 24*time.Hour:
-		return fmt.Sprintf("%d ч %d мин", int(d.Hours()), int(d.Minutes())%60)
-	default:
-		return fmt.Sprintf("%d д %d ч", int(d.Hours())/24, int(d.Hours())%24)
-	}
+	s.render(w, r, "error", nil)
 }

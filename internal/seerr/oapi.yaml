@@ -8,5 +8,7 @@ output-options:
     - search
     - request
     - users
+    - movies
+    - tv
   overlay:
     path: overlay.yaml

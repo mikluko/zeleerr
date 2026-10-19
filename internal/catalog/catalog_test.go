@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -135,7 +136,7 @@ func TestSearchKeepsMoviesAndSeries(t *testing.T) {
 	}}
 	c := newCatalog(t, s, nil, nil)
 
-	got, err := c.Search(context.Background(), "хаяо миядзаки")
+	got, err := c.Search(context.Background(), "ru", "хаяо миядзаки")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -190,35 +191,57 @@ func TestRequestRejectsUnknownMediaType(t *testing.T) {
 func TestQueueFoldsSeasonPackAndSortsByProgress(t *testing.T) {
 	r := &fake{t: t, responses: map[string]fakeResponse{
 		"GET /api/v3/queue": {200, `{"records":[
-			{"title":"Ponyo.2008.1080p","movie":{"title":"Ponyo"},"size":100,"sizeleft":10,"timeleft":"00:05:00","trackedDownloadState":"downloading"}
+			{"title":"Ponyo.2008.1080p","movie":{"title":"Ponyo","tmdbId":12429},"size":100,"sizeleft":10,"timeleft":"00:05:00","trackedDownloadState":"downloading"}
 		]}`},
 	}}
 	so := &fake{t: t, responses: map[string]fakeResponse{
 		"GET /api/v3/queue": {200, `{"records":[
-			{"title":"Lanterns.S01","series":{"title":"Lanterns"},"seasonNumber":1,"downloadId":"A","size":200,"sizeleft":150,"timeleft":"1.02:00:00","trackedDownloadState":"downloading"},
-			{"title":"Lanterns.S01","series":{"title":"Lanterns"},"seasonNumber":1,"downloadId":"A","size":200,"sizeleft":150,"timeleft":"1.02:00:00","trackedDownloadState":"downloading"}
+			{"title":"Lanterns.S01","series":{"title":"Lanterns","tmdbId":100},"seasonNumber":1,"downloadId":"A","size":200,"sizeleft":150,"timeleft":"1.02:00:00","trackedDownloadState":"downloading"},
+			{"title":"Lanterns.S01","series":{"title":"Lanterns","tmdbId":100},"seasonNumber":1,"downloadId":"A","size":200,"sizeleft":150,"timeleft":"1.02:00:00","trackedDownloadState":"downloading"}
 		]}`},
 	}}
-	c := newCatalog(t, nil, r, so)
+	s := &fake{t: t, responses: map[string]fakeResponse{
+		"GET /api/v1/request": {200, `{"results":[
+			{"type":"tv","media":{"tmdbId":15260,"status":3},"seasons":[{"seasonNumber":1},{"seasonNumber":2}]},
+			{"type":"movie","media":{"tmdbId":12429,"status":3}},
+			{"type":"movie","media":{"tmdbId":508883,"status":4}}
+		]}`},
+		"GET /api/v1/movie/12429": {200, `{"id":12429,"title":"Рыбка Поньо на утёсе","posterPath":"/ponyo.jpg","watchProviders":[{"iso_3166_1":"RU","flatrate":[]}]}`},
+		"GET /api/v1/tv/100":      {500, `{}`},
+		"GET /api/v1/tv/15260":    {200, `{"id":15260,"name":"Время приключений","posterPath":"/at.jpg"}`},
+	}}
+	c := newCatalog(t, s, r, so)
 
-	got, err := c.Queue(context.Background())
+	got, err := c.Queue(context.Background(), "ru")
 	if err != nil {
 		t.Fatal(err)
 	}
 	want := []Download{
-		{Name: "Lanterns", Detail: "сезон 1, эпизодов: 2", Progress: 0.25, Left: 26 * time.Hour},
-		{Name: "Ponyo", Progress: 0.9, Left: 5 * time.Minute},
+		{MediaType: "tv", TMDBID: 100, Name: "Lanterns", Season: 1, Episodes: 2, Progress: 0.25, Left: 26 * time.Hour},
+		{MediaType: "movie", TMDBID: 12429, Name: "Рыбка Поньо на утёсе", Poster: "https://image.tmdb.org/t/p/w185/ponyo.jpg", Progress: 0.9, Left: 5 * time.Minute},
+		{MediaType: "tv", TMDBID: 15260, Name: "Время приключений", Seasons: []int{1, 2}, Poster: "https://image.tmdb.org/t/p/w185/at.jpg", Searching: true},
 	}
-	if len(got) != len(want) {
-		t.Fatalf("got %+v", got)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("queue =\n%+v\nwant\n%+v", got, want)
 	}
-	for i := range want {
-		if got[i] != want[i] {
-			t.Errorf("download %d = %+v, want %+v", i, got[i], want[i])
-		}
+	if q := s.requests[1].URL.Query(); q.Get("language") != "ru" {
+		t.Errorf("details asked in %q, want ru", q.Get("language"))
 	}
 	if q := r.requests[0].URL.Query(); q.Get("includeMovie") != "true" {
 		t.Errorf("radarr query = %v", q)
+	}
+
+	if _, err := c.Queue(context.Background(), "ru"); err != nil {
+		t.Fatal(err)
+	}
+	lookups := 0
+	for _, req := range s.requests {
+		if req.URL.Path == "/api/v1/movie/12429" {
+			lookups++
+		}
+	}
+	if lookups != 1 {
+		t.Errorf("movie looked up %d times, want once", lookups)
 	}
 }
 

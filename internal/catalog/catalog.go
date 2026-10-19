@@ -57,13 +57,20 @@ type Title struct {
 	Status    Status
 }
 
-// Download is one movie, or one season of a series, in the download queue.
+// Download is one movie, or one season of a series, in the download queue,
+// or a requested movie or series no release has been found for yet.
 type Download struct {
-	Name     string
-	Detail   string
-	Progress float64 // 0..1
-	Left     time.Duration
-	Waiting  bool // done downloading, waiting to be imported
+	MediaType string // "movie" or "tv"
+	TMDBID    int
+	Name      string
+	Season    int           // the season downloading, for a series
+	Episodes  int           // how many of its episodes are in the queue
+	Seasons   []int         // the seasons requested, for a series being searched for
+	Poster    string        // full URL, or "" when TMDB has none
+	Progress  float64       // 0..1
+	Left      time.Duration // 0 when unknown
+	Waiting   bool          // done downloading, waiting to be imported
+	Searching bool          // requested, not downloading yet
 }
 
 // Catalog talks to the services on behalf of signed-in family members.
@@ -74,8 +81,23 @@ type Catalog struct {
 	permissions int
 	posterBase  string
 
-	mu    sync.Mutex
-	users map[string]int
+	mu     sync.Mutex
+	users  map[string]int
+	titles map[titleKey]described
+}
+
+type mediaKey struct {
+	mediaType string
+	tmdbID    int
+}
+
+type titleKey struct {
+	mediaKey
+	lang string
+}
+
+type described struct {
+	name, poster string
 }
 
 // New returns a Catalog. permissions are the Seerr permission bits given to a
@@ -88,6 +110,7 @@ func New(s seerr.ClientWithResponsesInterface, r radarr.ClientWithResponsesInter
 		permissions: permissions,
 		posterBase:  "https://image.tmdb.org/t/p/w185",
 		users:       map[string]int{},
+		titles:      map[titleKey]described{},
 	}
 }
 
@@ -151,9 +174,9 @@ func (c *Catalog) UserID(ctx context.Context, email string) (int, error) {
 	return id, nil
 }
 
-// Search finds movies and series by name; people are left out.
-func (c *Catalog) Search(ctx context.Context, query string) ([]Title, error) {
-	lang := "ru"
+// Search finds movies and series by name, named in the language lang, an
+// ISO 639-1 code; people are left out.
+func (c *Catalog) Search(ctx context.Context, lang, query string) ([]Title, error) {
 	res, err := c.seerr.GetSearchWithResponse(ctx, &seerr.GetSearchParams{Query: query, Language: &lang})
 	if err != nil {
 		return nil, fmt.Errorf("catalog: search: %w", err)
@@ -222,8 +245,10 @@ func (c *Catalog) Request(ctx context.Context, userID int, mediaType string, tmd
 }
 
 // Queue lists what Radarr and Sonarr are downloading, a series' episodes
-// folded into one entry per season, the least done first.
-func (c *Catalog) Queue(ctx context.Context) ([]Download, error) {
+// folded into one entry per season, the least done first; then what Seerr
+// has a request for and nothing is downloading yet, the latest request first.
+// Names and posters are TMDB's in the language lang where it has them.
+func (c *Catalog) Queue(ctx context.Context, lang string) ([]Download, error) {
 	var out []Download
 
 	size, yes := int32(200), true
@@ -236,16 +261,18 @@ func (c *Catalog) Queue(ctx context.Context) ([]Download, error) {
 	}
 	if movies.JSON200.Records != nil {
 		for _, r := range *movies.JSON200.Records {
-			name := deref(r.Title)
-			if r.Movie != nil && r.Movie.Title != nil {
-				name = *r.Movie.Title
+			d := Download{
+				MediaType: "movie",
+				Name:      deref(r.Title),
+				Progress:  progress(r.Size, r.Sizeleft),
+				Left:      left(r.Timeleft),
+				Waiting:   waitingRadarr(r.TrackedDownloadState),
 			}
-			out = append(out, Download{
-				Name:     name,
-				Progress: progress(r.Size, r.Sizeleft),
-				Left:     left(r.Timeleft),
-				Waiting:  waitingRadarr(r.TrackedDownloadState),
-			})
+			if r.Movie != nil {
+				d.Name = valueOr(r.Movie.Title, d.Name)
+				d.TMDBID = int(value32(r.Movie.TmdbId))
+			}
+			out = append(out, d)
 		}
 	}
 
@@ -261,6 +288,7 @@ func (c *Catalog) Queue(ctx context.Context) ([]Download, error) {
 		season int32
 	}
 	type agg struct {
+		tmdbID     int
 		size, left float64
 		episodes   int
 		remaining  time.Duration
@@ -272,15 +300,17 @@ func (c *Catalog) Queue(ctx context.Context) ([]Download, error) {
 	if shows.JSON200.Records != nil {
 		for _, r := range *shows.JSON200.Records {
 			k := key{series: deref(r.Title)}
-			if r.Series != nil && r.Series.Title != nil {
-				k.series = *r.Series.Title
+			tmdbID := 0
+			if r.Series != nil {
+				k.series = valueOr(r.Series.Title, k.series)
+				tmdbID = int(value32(r.Series.TmdbId))
 			}
 			if r.SeasonNumber != nil {
 				k.season = *r.SeasonNumber
 			}
 			a, ok := seasons[k]
 			if !ok {
-				a = &agg{waiting: true, downloads: map[string]bool{}}
+				a = &agg{tmdbID: tmdbID, waiting: true, downloads: map[string]bool{}}
 				seasons[k] = a
 				order = append(order, k)
 			}
@@ -301,18 +331,125 @@ func (c *Catalog) Queue(ctx context.Context) ([]Download, error) {
 	}
 	for _, k := range order {
 		a := seasons[k]
-		detail := fmt.Sprintf("сезон %d, эпизодов: %d", k.season, a.episodes)
 		out = append(out, Download{
-			Name:     k.series,
-			Detail:   detail,
-			Progress: progress(&a.size, &a.left),
-			Left:     a.remaining,
-			Waiting:  a.waiting,
+			MediaType: "tv",
+			TMDBID:    a.tmdbID,
+			Name:      k.series,
+			Season:    int(k.season),
+			Episodes:  a.episodes,
+			Progress:  progress(&a.size, &a.left),
+			Left:      a.remaining,
+			Waiting:   a.waiting,
 		})
 	}
-
 	sort.SliceStable(out, func(i, j int) bool { return out[i].Progress < out[j].Progress })
+
+	searching, err := c.searching(ctx, out)
+	if err != nil {
+		return nil, err
+	}
+	out = append(out, searching...)
+
+	for i := range out {
+		c.describe(ctx, lang, &out[i])
+	}
 	return out, nil
+}
+
+// searching lists the movies and series Seerr is still processing that have
+// nothing in the download queue.
+func (c *Catalog) searching(ctx context.Context, queued []Download) ([]Download, error) {
+	in := map[mediaKey]bool{}
+	for _, d := range queued {
+		in[mediaKey{d.MediaType, d.TMDBID}] = true
+	}
+	take := float32(100)
+	filter := seerr.GetRequestParamsFilter("processing")
+	res, err := c.seerr.GetRequestWithResponse(ctx, &seerr.GetRequestParams{Take: &take, Filter: &filter})
+	if err != nil {
+		return nil, fmt.Errorf("catalog: requests: %w", err)
+	}
+	if res.JSON200 == nil {
+		return nil, fmt.Errorf("catalog: requests: %s", res.Status())
+	}
+	var out []Download
+	if res.JSON200.Results == nil {
+		return out, nil
+	}
+	for _, r := range *res.JSON200.Results {
+		if r.Media == nil || r.Type == nil || Status(value32f(r.Media.Status)) != StatusProcessing {
+			continue
+		}
+		k := mediaKey{string(*r.Type), int(value32f(r.Media.TmdbId))}
+		if in[k] {
+			continue
+		}
+		in[k] = true
+		d := Download{MediaType: k.mediaType, TMDBID: k.tmdbID, Searching: true}
+		if r.Seasons != nil {
+			for _, s := range *r.Seasons {
+				if s.SeasonNumber != nil {
+					d.Seasons = append(d.Seasons, *s.SeasonNumber)
+				}
+			}
+		}
+		out = append(out, d)
+	}
+	return out, nil
+}
+
+// describe gives d the name in lang and the poster TMDB has, keeping the name
+// d came with when Seerr cannot say. Answers are kept for the process's life.
+func (c *Catalog) describe(ctx context.Context, lang string, d *Download) {
+	if d.TMDBID == 0 {
+		return
+	}
+	k := titleKey{mediaKey{d.MediaType, d.TMDBID}, lang}
+	c.mu.Lock()
+	known, ok := c.titles[k]
+	c.mu.Unlock()
+	if !ok {
+		var err error
+		known, err = c.lookup(ctx, k)
+		if err != nil {
+			if d.Name == "" {
+				d.Name = fmt.Sprintf("TMDB %d", d.TMDBID)
+			}
+			return
+		}
+		c.mu.Lock()
+		c.titles[k] = known
+		c.mu.Unlock()
+	}
+	if known.name != "" {
+		d.Name = known.name
+	}
+	d.Poster = known.poster
+}
+
+func (c *Catalog) lookup(ctx context.Context, k titleKey) (described, error) {
+	lang := k.lang
+	switch k.mediaType {
+	case "movie":
+		res, err := c.seerr.GetMovieMovieIdWithResponse(ctx, float32(k.tmdbID), &seerr.GetMovieMovieIdParams{Language: &lang})
+		if err != nil {
+			return described{}, err
+		}
+		if res.JSON200 == nil {
+			return described{}, fmt.Errorf("catalog: movie %d: %s", k.tmdbID, res.Status())
+		}
+		return described{deref(res.JSON200.Title), c.poster(res.JSON200.PosterPath)}, nil
+	case "tv":
+		res, err := c.seerr.GetTvTvIdWithResponse(ctx, float32(k.tmdbID), &seerr.GetTvTvIdParams{Language: &lang})
+		if err != nil {
+			return described{}, err
+		}
+		if res.JSON200 == nil {
+			return described{}, fmt.Errorf("catalog: series %d: %s", k.tmdbID, res.Status())
+		}
+		return described{deref(res.JSON200.Name), c.poster(res.JSON200.PosterPath)}, nil
+	}
+	return described{}, fmt.Errorf("catalog: unknown media type %q", k.mediaType)
 }
 
 func asUser(id int) seerr.RequestEditorFn {
@@ -393,6 +530,27 @@ func deref(s *string) string {
 		return ""
 	}
 	return *s
+}
+
+func valueOr(s *string, fallback string) string {
+	if s == nil || *s == "" {
+		return fallback
+	}
+	return *s
+}
+
+func value32(n *int32) int32 {
+	if n == nil {
+		return 0
+	}
+	return *n
+}
+
+func value32f(f *float32) float32 {
+	if f == nil {
+		return 0
+	}
+	return *f
 }
 
 func value(f *float64) float64 {

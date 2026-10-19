@@ -9,3 +9,26 @@ actions:
     update:
       password:
         type: string
+  - target: $.components.schemas.MediaRequest.properties
+    update:
+      type:
+        type: string
+        enum: [movie, tv]
+      seasons:
+        type: array
+        items:
+          type: object
+          properties:
+            seasonNumber:
+              type: integer
+  - target: $.components.schemas.MediaInfo.properties
+    update:
+      mediaType:
+        type: string
+        enum: [movie, tv]
+  # Described as an array of arrays; Seerr sends an array of objects, and the
+  # details fail to decode. zeleerr does not read it.
+  - target: $.components.schemas.MovieDetails.properties.watchProviders
+    remove: true
+  - target: $.components.schemas.TvDetails.properties.watchProviders
+    remove: true

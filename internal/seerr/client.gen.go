@@ -16,6 +16,90 @@ import (
 	"github.com/oapi-codegen/runtime"
 )
 
+// Defines values for MediaInfoMediaType.
+const (
+	MediaInfoMediaTypeMovie MediaInfoMediaType = "movie"
+	MediaInfoMediaTypeTv    MediaInfoMediaType = "tv"
+)
+
+// Valid indicates whether the value is a known member of the MediaInfoMediaType enum.
+func (e MediaInfoMediaType) Valid() bool {
+	switch e {
+	case MediaInfoMediaTypeMovie:
+		return true
+	case MediaInfoMediaTypeTv:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for MediaRequestType.
+const (
+	MediaRequestTypeMovie MediaRequestType = "movie"
+	MediaRequestTypeTv    MediaRequestType = "tv"
+)
+
+// Valid indicates whether the value is a known member of the MediaRequestType enum.
+func (e MediaRequestType) Valid() bool {
+	switch e {
+	case MediaRequestTypeMovie:
+		return true
+	case MediaRequestTypeTv:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RelatedVideoSite.
+const (
+	YouTube RelatedVideoSite = "YouTube"
+)
+
+// Valid indicates whether the value is a known member of the RelatedVideoSite enum.
+func (e RelatedVideoSite) Valid() bool {
+	switch e {
+	case YouTube:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RelatedVideoType.
+const (
+	BehindTheScenes RelatedVideoType = "Behind the Scenes"
+	Bloopers        RelatedVideoType = "Bloopers"
+	Clip            RelatedVideoType = "Clip"
+	Featurette      RelatedVideoType = "Featurette"
+	OpeningCredits  RelatedVideoType = "Opening Credits"
+	Teaser          RelatedVideoType = "Teaser"
+	Trailer         RelatedVideoType = "Trailer"
+)
+
+// Valid indicates whether the value is a known member of the RelatedVideoType enum.
+func (e RelatedVideoType) Valid() bool {
+	switch e {
+	case BehindTheScenes:
+		return true
+	case Bloopers:
+		return true
+	case Clip:
+		return true
+	case Featurette:
+		return true
+	case OpeningCredits:
+		return true
+	case Teaser:
+		return true
+	case Trailer:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetDiscoverMoviesParamsCertificationMode.
 const (
 	GetDiscoverMoviesParamsCertificationModeExact GetDiscoverMoviesParamsCertificationMode = "exact"
@@ -85,6 +169,84 @@ func (e GetDiscoverTvParamsCertificationMode) Valid() bool {
 	case GetDiscoverTvParamsCertificationModeExact:
 		return true
 	case GetDiscoverTvParamsCertificationModeRange:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetMovieMovieIdRatings200JSONResponseBodyAudienceRating.
+const (
+	GetMovieMovieIdRatings200JSONResponseBodyAudienceRatingSpilled GetMovieMovieIdRatings200JSONResponseBodyAudienceRating = "Spilled"
+	GetMovieMovieIdRatings200JSONResponseBodyAudienceRatingUpright GetMovieMovieIdRatings200JSONResponseBodyAudienceRating = "Upright"
+)
+
+// Valid indicates whether the value is a known member of the GetMovieMovieIdRatings200JSONResponseBodyAudienceRating enum.
+func (e GetMovieMovieIdRatings200JSONResponseBodyAudienceRating) Valid() bool {
+	switch e {
+	case GetMovieMovieIdRatings200JSONResponseBodyAudienceRatingSpilled:
+		return true
+	case GetMovieMovieIdRatings200JSONResponseBodyAudienceRatingUpright:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetMovieMovieIdRatings200JSONResponseBodyCriticsRating.
+const (
+	GetMovieMovieIdRatings200JSONResponseBodyCriticsRatingCertifiedFresh GetMovieMovieIdRatings200JSONResponseBodyCriticsRating = "Certified Fresh"
+	GetMovieMovieIdRatings200JSONResponseBodyCriticsRatingFresh          GetMovieMovieIdRatings200JSONResponseBodyCriticsRating = "Fresh"
+	GetMovieMovieIdRatings200JSONResponseBodyCriticsRatingRotten         GetMovieMovieIdRatings200JSONResponseBodyCriticsRating = "Rotten"
+)
+
+// Valid indicates whether the value is a known member of the GetMovieMovieIdRatings200JSONResponseBodyCriticsRating enum.
+func (e GetMovieMovieIdRatings200JSONResponseBodyCriticsRating) Valid() bool {
+	switch e {
+	case GetMovieMovieIdRatings200JSONResponseBodyCriticsRatingCertifiedFresh:
+		return true
+	case GetMovieMovieIdRatings200JSONResponseBodyCriticsRatingFresh:
+		return true
+	case GetMovieMovieIdRatings200JSONResponseBodyCriticsRatingRotten:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating.
+const (
+	GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRatingSpilled GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating = "Spilled"
+	GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRatingUpright GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating = "Upright"
+)
+
+// Valid indicates whether the value is a known member of the GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating enum.
+func (e GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating) Valid() bool {
+	switch e {
+	case GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRatingSpilled:
+		return true
+	case GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRatingUpright:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating.
+const (
+	GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRatingCertifiedFresh GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating = "Certified Fresh"
+	GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRatingFresh          GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating = "Fresh"
+	GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRatingRotten         GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating = "Rotten"
+)
+
+// Valid indicates whether the value is a known member of the GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating enum.
+func (e GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating) Valid() bool {
+	switch e {
+	case GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRatingCertifiedFresh:
+		return true
+	case GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRatingFresh:
+		return true
+	case GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRatingRotten:
 		return true
 	default:
 		return false
@@ -256,6 +418,24 @@ func (e PostRequestRequestIdStatusParamsStatus) Valid() bool {
 	}
 }
 
+// Defines values for GetTvTvIdRatings200JSONResponseBodyCriticsRating.
+const (
+	GetTvTvIdRatings200JSONResponseBodyCriticsRatingFresh  GetTvTvIdRatings200JSONResponseBodyCriticsRating = "Fresh"
+	GetTvTvIdRatings200JSONResponseBodyCriticsRatingRotten GetTvTvIdRatings200JSONResponseBodyCriticsRating = "Rotten"
+)
+
+// Valid indicates whether the value is a known member of the GetTvTvIdRatings200JSONResponseBodyCriticsRating enum.
+func (e GetTvTvIdRatings200JSONResponseBodyCriticsRating) Valid() bool {
+	switch e {
+	case GetTvTvIdRatings200JSONResponseBodyCriticsRatingFresh:
+		return true
+	case GetTvTvIdRatings200JSONResponseBodyCriticsRatingRotten:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetUserParamsSort.
 const (
 	Created     GetUserParamsSort = "created"
@@ -304,12 +484,73 @@ func (e GetUserParamsSortDirection) Valid() bool {
 	}
 }
 
+// Cast defines model for Cast.
+type Cast struct {
+	// CastId Example: 1
+	CastId *float32 `json:"castId,omitempty"`
+
+	// Character Example: Some Character Name
+	Character *string  `json:"character,omitempty"`
+	CreditId  *string  `json:"creditId,omitempty"`
+	Gender    *float32 `json:"gender,omitempty"`
+
+	// Id Example: 123
+	Id *float32 `json:"id,omitempty"`
+
+	// Name Example: Some Persons Name
+	Name        *string  `json:"name,omitempty"`
+	Order       *float32 `json:"order,omitempty"`
+	ProfilePath *string  `json:"profilePath,omitempty"`
+}
+
 // Company defines model for Company.
 type Company struct {
 	// Id Example: 1
 	Id       *float32 `json:"id,omitempty"`
 	LogoPath *string  `json:"logo_path,omitempty"`
 	Name     *string  `json:"name,omitempty"`
+}
+
+// Crew defines model for Crew.
+type Crew struct {
+	CreditId   *string  `json:"creditId,omitempty"`
+	Department *string  `json:"department,omitempty"`
+	Gender     *float32 `json:"gender,omitempty"`
+
+	// Id Example: 123
+	Id  *float32 `json:"id,omitempty"`
+	Job *string  `json:"job,omitempty"`
+
+	// Name Example: Some Persons Name
+	Name        *string `json:"name,omitempty"`
+	ProfilePath *string `json:"profilePath,omitempty"`
+}
+
+// Episode defines model for Episode.
+type Episode struct {
+	AirDate        *string  `json:"airDate,omitempty"`
+	EpisodeNumber  *float32 `json:"episodeNumber,omitempty"`
+	Id             *float32 `json:"id,omitempty"`
+	Name           *string  `json:"name,omitempty"`
+	Overview       *string  `json:"overview,omitempty"`
+	ProductionCode *string  `json:"productionCode,omitempty"`
+	SeasonNumber   *float32 `json:"seasonNumber,omitempty"`
+	ShowId         *float32 `json:"showId,omitempty"`
+	StillPath      *string  `json:"stillPath,omitempty"`
+	VoteAverage    *float32 `json:"voteAverage,omitempty"`
+	VoteCount      *float32 `json:"voteCount,omitempty"`
+}
+
+// ExternalIds defines model for ExternalIds.
+type ExternalIds struct {
+	FacebookId  *string  `json:"facebookId,omitempty"`
+	FreebaseId  *string  `json:"freebaseId,omitempty"`
+	FreebaseMid *string  `json:"freebaseMid,omitempty"`
+	ImdbId      *string  `json:"imdbId,omitempty"`
+	InstagramId *string  `json:"instagramId,omitempty"`
+	TvdbId      *float32 `json:"tvdbId,omitempty"`
+	TvrageId    *float32 `json:"tvrageId,omitempty"`
+	TwitterId   *string  `json:"twitterId,omitempty"`
 }
 
 // Genre defines model for Genre.
@@ -333,9 +574,10 @@ type Keyword struct {
 // MediaInfo defines model for MediaInfo.
 type MediaInfo struct {
 	// CreatedAt Example: 2020-09-12T10:00:27.000Z
-	CreatedAt *string         `json:"createdAt,omitempty"`
-	Id        *float32        `json:"id,omitempty"`
-	Requests  *[]MediaRequest `json:"requests,omitempty"`
+	CreatedAt *string             `json:"createdAt,omitempty"`
+	Id        *float32            `json:"id,omitempty"`
+	MediaType *MediaInfoMediaType `json:"mediaType,omitempty"`
+	Requests  *[]MediaRequest     `json:"requests,omitempty"`
 
 	// Status Availability of the media. 1 = `UNKNOWN`, 2 = `PENDING`, 3 = `PROCESSING`, 4 = `PARTIALLY_AVAILABLE`, 5 = `AVAILABLE`, 6 = `DELETED`
 	//
@@ -347,6 +589,9 @@ type MediaInfo struct {
 	// UpdatedAt Example: 2020-09-12T10:00:27.000Z
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 }
+
+// MediaInfoMediaType defines model for MediaInfo.MediaType.
+type MediaInfoMediaType string
 
 // MediaRequest defines model for MediaRequest.
 type MediaRequest struct {
@@ -368,12 +613,16 @@ type MediaRequest struct {
 	ProfileId   *float32                 `json:"profileId,omitempty"`
 	RequestedBy *User                    `json:"requestedBy,omitempty"`
 	RootFolder  *string                  `json:"rootFolder,omitempty"`
-	ServerId    *float32                 `json:"serverId,omitempty"`
+	Seasons     *[]struct {
+		SeasonNumber *int `json:"seasonNumber,omitempty"`
+	} `json:"seasons,omitempty"`
+	ServerId *float32 `json:"serverId,omitempty"`
 
 	// Status Status of the request. 1 = PENDING APPROVAL, 2 = APPROVED, 3 = DECLINED
 	//
 	// Example: 0
-	Status *float32 `json:"status,omitempty"`
+	Status *float32          `json:"status,omitempty"`
+	Type   *MediaRequestType `json:"type,omitempty"`
 
 	// UpdatedAt Example: 2020-09-12T10:00:27.000Z
 	UpdatedAt *string `json:"updatedAt,omitempty"`
@@ -385,6 +634,84 @@ type MediaRequestModifiedBy1 = string
 // MediaRequest_ModifiedBy defines model for MediaRequest.ModifiedBy.
 type MediaRequest_ModifiedBy struct {
 	union json.RawMessage
+}
+
+// MediaRequestType defines model for MediaRequest.Type.
+type MediaRequestType string
+
+// MovieDetails defines model for MovieDetails.
+type MovieDetails struct {
+	Adult        *bool   `json:"adult,omitempty"`
+	BackdropPath *string `json:"backdropPath,omitempty"`
+
+	// Budget Example: 1000000
+	Budget     *float32 `json:"budget,omitempty"`
+	Collection *struct {
+		BackdropPath *string `json:"backdropPath,omitempty"`
+
+		// Id Example: 1
+		Id *float32 `json:"id,omitempty"`
+
+		// Name Example: A collection
+		Name       *string `json:"name,omitempty"`
+		PosterPath *string `json:"posterPath,omitempty"`
+	} `json:"collection,omitempty"`
+	Credits *struct {
+		Cast *[]Cast `json:"cast,omitempty"`
+		Crew *[]Crew `json:"crew,omitempty"`
+	} `json:"credits,omitempty"`
+	ExternalIds *ExternalIds `json:"externalIds,omitempty"`
+	Genres      *[]Genre     `json:"genres,omitempty"`
+	Homepage    *string      `json:"homepage,omitempty"`
+
+	// Id Example: 123
+	Id *float32 `json:"id,omitempty"`
+
+	// ImdbId Example: tt123
+	ImdbId              *string              `json:"imdbId,omitempty"`
+	MediaInfo           *MediaInfo           `json:"mediaInfo,omitempty"`
+	OriginalLanguage    *string              `json:"originalLanguage,omitempty"`
+	OriginalTitle       *string              `json:"originalTitle,omitempty"`
+	Overview            *string              `json:"overview,omitempty"`
+	Popularity          *float32             `json:"popularity,omitempty"`
+	PosterPath          *string              `json:"posterPath,omitempty"`
+	ProductionCompanies *[]ProductionCompany `json:"productionCompanies,omitempty"`
+	ProductionCountries *[]struct {
+		Iso31661 *string `json:"iso_3166_1,omitempty"`
+		Name     *string `json:"name,omitempty"`
+	} `json:"productionCountries,omitempty"`
+	RelatedVideos *[]RelatedVideo `json:"relatedVideos,omitempty"`
+	ReleaseDate   *string         `json:"releaseDate,omitempty"`
+	Releases      *struct {
+		Results *[]struct {
+			// Iso31661 Example: US
+			Iso31661     *string `json:"iso_3166_1,omitempty"`
+			Rating       *string `json:"rating,omitempty"`
+			ReleaseDates *[]struct {
+				// Certification Example: PG-13
+				Certification *string `json:"certification,omitempty"`
+				Iso6391       *string `json:"iso_639_1,omitempty"`
+
+				// Note Example: Blu ray
+				Note *string `json:"note,omitempty"`
+
+				// ReleaseDate Example: 2017-07-12T00:00:00.000Z
+				ReleaseDate *string `json:"release_date,omitempty"`
+
+				// Type Example: 1
+				Type *float32 `json:"type,omitempty"`
+			} `json:"release_dates,omitempty"`
+		} `json:"results,omitempty"`
+	} `json:"releases,omitempty"`
+	Revenue         *float32          `json:"revenue,omitempty"`
+	Runtime         *float32          `json:"runtime,omitempty"`
+	SpokenLanguages *[]SpokenLanguage `json:"spokenLanguages,omitempty"`
+	Status          *string           `json:"status,omitempty"`
+	Tagline         *string           `json:"tagline,omitempty"`
+	Title           *string           `json:"title,omitempty"`
+	Video           *bool             `json:"video,omitempty"`
+	VoteAverage     *float32          `json:"voteAverage,omitempty"`
+	VoteCount       *float32          `json:"voteCount,omitempty"`
 }
 
 // MovieResult defines model for MovieResult.
@@ -481,6 +808,43 @@ type ProductionCompany struct {
 	OriginCountry *string  `json:"originCountry,omitempty"`
 }
 
+// RelatedVideo defines model for RelatedVideo.
+type RelatedVideo struct {
+	// Key Example: 9qhL2_UxXM0
+	Key *string `json:"key,omitempty"`
+
+	// Name Example: Trailer for some movie (1978)
+	Name *string           `json:"name,omitempty"`
+	Site *RelatedVideoSite `json:"site,omitempty"`
+
+	// Size Example: 1080
+	Size *float32 `json:"size,omitempty"`
+
+	// Type Example: Trailer
+	Type *RelatedVideoType `json:"type,omitempty"`
+
+	// Url Example: https://www.youtube.com/watch?v=9qhL2_UxXM0/
+	Url *string `json:"url,omitempty"`
+}
+
+// RelatedVideoSite defines model for RelatedVideo.Site.
+type RelatedVideoSite string
+
+// RelatedVideoType Example: Trailer
+type RelatedVideoType string
+
+// Season defines model for Season.
+type Season struct {
+	AirDate      *string    `json:"airDate,omitempty"`
+	EpisodeCount *float32   `json:"episodeCount,omitempty"`
+	Episodes     *[]Episode `json:"episodes,omitempty"`
+	Id           *float32   `json:"id,omitempty"`
+	Name         *string    `json:"name,omitempty"`
+	Overview     *string    `json:"overview,omitempty"`
+	PosterPath   *string    `json:"posterPath,omitempty"`
+	SeasonNumber *float32   `json:"seasonNumber,omitempty"`
+}
+
 // SpokenLanguage defines model for SpokenLanguage.
 type SpokenLanguage struct {
 	// EnglishName Example: English
@@ -491,6 +855,67 @@ type SpokenLanguage struct {
 
 	// Name Example: English
 	Name *string `json:"name,omitempty"`
+}
+
+// TvDetails defines model for TvDetails.
+type TvDetails struct {
+	BackdropPath   *string `json:"backdropPath,omitempty"`
+	ContentRatings *struct {
+		Results *[]struct {
+			// Iso31661 Example: US
+			Iso31661 *string `json:"iso_3166_1,omitempty"`
+
+			// Rating Example: TV-14
+			Rating *string `json:"rating,omitempty"`
+		} `json:"results,omitempty"`
+	} `json:"contentRatings,omitempty"`
+	CreatedBy *[]struct {
+		Gender      *float32 `json:"gender,omitempty"`
+		Id          *float32 `json:"id,omitempty"`
+		Name        *string  `json:"name,omitempty"`
+		ProfilePath *string  `json:"profilePath,omitempty"`
+	} `json:"createdBy,omitempty"`
+	Credits *struct {
+		Cast *[]Cast `json:"cast,omitempty"`
+		Crew *[]Crew `json:"crew,omitempty"`
+	} `json:"credits,omitempty"`
+	EpisodeRunTime *[]float32   `json:"episodeRunTime,omitempty"`
+	ExternalIds    *ExternalIds `json:"externalIds,omitempty"`
+	FirstAirDate   *string      `json:"firstAirDate,omitempty"`
+	Genres         *[]Genre     `json:"genres,omitempty"`
+	Homepage       *string      `json:"homepage,omitempty"`
+
+	// Id Example: 123
+	Id                  *float32             `json:"id,omitempty"`
+	InProduction        *bool                `json:"inProduction,omitempty"`
+	Keywords            *[]Keyword           `json:"keywords,omitempty"`
+	Languages           *[]string            `json:"languages,omitempty"`
+	LastAirDate         *string              `json:"lastAirDate,omitempty"`
+	LastEpisodeToAir    *Episode             `json:"lastEpisodeToAir,omitempty"`
+	MediaInfo           *MediaInfo           `json:"mediaInfo,omitempty"`
+	Name                *string              `json:"name,omitempty"`
+	Networks            *[]ProductionCompany `json:"networks,omitempty"`
+	NextEpisodeToAir    *Episode             `json:"nextEpisodeToAir,omitempty"`
+	NumberOfEpisodes    *float32             `json:"numberOfEpisodes,omitempty"`
+	NumberOfSeason      *float32             `json:"numberOfSeason,omitempty"`
+	OriginCountry       *[]string            `json:"originCountry,omitempty"`
+	OriginalLanguage    *string              `json:"originalLanguage,omitempty"`
+	OriginalName        *string              `json:"originalName,omitempty"`
+	Overview            *string              `json:"overview,omitempty"`
+	Popularity          *float32             `json:"popularity,omitempty"`
+	PosterPath          *string              `json:"posterPath,omitempty"`
+	ProductionCompanies *[]ProductionCompany `json:"productionCompanies,omitempty"`
+	ProductionCountries *[]struct {
+		Iso31661 *string `json:"iso_3166_1,omitempty"`
+		Name     *string `json:"name,omitempty"`
+	} `json:"productionCountries,omitempty"`
+	Seasons         *[]Season         `json:"seasons,omitempty"`
+	SpokenLanguages *[]SpokenLanguage `json:"spokenLanguages,omitempty"`
+	Status          *string           `json:"status,omitempty"`
+	Tagline         *string           `json:"tagline,omitempty"`
+	Type            *string           `json:"type,omitempty"`
+	VoteAverage     *float32          `json:"voteAverage,omitempty"`
+	VoteCount       *float32          `json:"voteCount,omitempty"`
 }
 
 // TvResult defines model for TvResult.
@@ -825,6 +1250,35 @@ type GetDiscoverWatchlistParams struct {
 	Page *float32 `form:"page,omitempty" json:"page,omitempty"`
 }
 
+// GetMovieMovieIdParams defines parameters for GetMovieMovieId.
+type GetMovieMovieIdParams struct {
+	Language *string `form:"language,omitempty" json:"language,omitempty"`
+}
+
+// GetMovieMovieIdRatings200JSONResponseBodyAudienceRating defines parameters for GetMovieMovieIdRatings.
+type GetMovieMovieIdRatings200JSONResponseBodyAudienceRating string
+
+// GetMovieMovieIdRatings200JSONResponseBodyCriticsRating defines parameters for GetMovieMovieIdRatings.
+type GetMovieMovieIdRatings200JSONResponseBodyCriticsRating string
+
+// GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating defines parameters for GetMovieMovieIdRatingscombined.
+type GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating string
+
+// GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating defines parameters for GetMovieMovieIdRatingscombined.
+type GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating string
+
+// GetMovieMovieIdRecommendationsParams defines parameters for GetMovieMovieIdRecommendations.
+type GetMovieMovieIdRecommendationsParams struct {
+	Page     *float32 `form:"page,omitempty" json:"page,omitempty"`
+	Language *string  `form:"language,omitempty" json:"language,omitempty"`
+}
+
+// GetMovieMovieIdSimilarParams defines parameters for GetMovieMovieIdSimilar.
+type GetMovieMovieIdSimilarParams struct {
+	Page     *float32 `form:"page,omitempty" json:"page,omitempty"`
+	Language *string  `form:"language,omitempty" json:"language,omitempty"`
+}
+
 // GetRequestParams defines parameters for GetRequest.
 type GetRequestParams struct {
 	Take          *float32                       `form:"take,omitempty" json:"take,omitempty"`
@@ -929,6 +1383,31 @@ type GetSearchCompanyParams struct {
 type GetSearchKeywordParams struct {
 	Query string   `form:"query" json:"query"`
 	Page  *float32 `form:"page,omitempty" json:"page,omitempty"`
+}
+
+// GetTvTvIdParams defines parameters for GetTvTvId.
+type GetTvTvIdParams struct {
+	Language *string `form:"language,omitempty" json:"language,omitempty"`
+}
+
+// GetTvTvIdRatings200JSONResponseBodyCriticsRating defines parameters for GetTvTvIdRatings.
+type GetTvTvIdRatings200JSONResponseBodyCriticsRating string
+
+// GetTvTvIdRecommendationsParams defines parameters for GetTvTvIdRecommendations.
+type GetTvTvIdRecommendationsParams struct {
+	Page     *float32 `form:"page,omitempty" json:"page,omitempty"`
+	Language *string  `form:"language,omitempty" json:"language,omitempty"`
+}
+
+// GetTvTvIdSeasonSeasonNumberParams defines parameters for GetTvTvIdSeasonSeasonNumber.
+type GetTvTvIdSeasonSeasonNumberParams struct {
+	Language *string `form:"language,omitempty" json:"language,omitempty"`
+}
+
+// GetTvTvIdSimilarParams defines parameters for GetTvTvIdSimilar.
+type GetTvTvIdSimilarParams struct {
+	Page     *float32 `form:"page,omitempty" json:"page,omitempty"`
+	Language *string  `form:"language,omitempty" json:"language,omitempty"`
 }
 
 // GetUserParams defines parameters for GetUser.
@@ -1657,6 +2136,41 @@ type ClientInterface interface {
 	// Corresponds with GET /discover/watchlist (the `GetDiscoverWatchlist` operationId).
 	GetDiscoverWatchlist(ctx context.Context, params *GetDiscoverWatchlistParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetMovieMovieId Get movie details
+	//
+	// Returns full movie details in a JSON object.
+	//
+	// Corresponds with GET /movie/{movieId} (the `GetMovieMovieId` operationId).
+	GetMovieMovieId(ctx context.Context, movieId float32, params *GetMovieMovieIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMovieMovieIdRatings Get movie ratings
+	//
+	// Returns ratings based on the provided movieId in a JSON object.
+	//
+	// Corresponds with GET /movie/{movieId}/ratings (the `GetMovieMovieIdRatings` operationId).
+	GetMovieMovieIdRatings(ctx context.Context, movieId float32, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMovieMovieIdRatingscombined Get RT and IMDB movie ratings combined
+	//
+	// Returns ratings from RottenTomatoes and IMDB based on the provided movieId in a JSON object.
+	//
+	// Corresponds with GET /movie/{movieId}/ratingscombined (the `GetMovieMovieIdRatingscombined` operationId).
+	GetMovieMovieIdRatingscombined(ctx context.Context, movieId float32, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMovieMovieIdRecommendations Get recommended movies
+	//
+	// Returns list of recommended movies based on provided movie ID in a JSON object.
+	//
+	// Corresponds with GET /movie/{movieId}/recommendations (the `GetMovieMovieIdRecommendations` operationId).
+	GetMovieMovieIdRecommendations(ctx context.Context, movieId float32, params *GetMovieMovieIdRecommendationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetMovieMovieIdSimilar Get similar movies
+	//
+	// Returns list of similar movies based on the provided movieId in a JSON object.
+	//
+	// Corresponds with GET /movie/{movieId}/similar (the `GetMovieMovieIdSimilar` operationId).
+	GetMovieMovieIdSimilar(ctx context.Context, movieId float32, params *GetMovieMovieIdSimilarParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetRequest Get all requests
 	//
 	// Returns all requests if the user has the `ADMIN` or `MANAGE_REQUESTS` permissions. Otherwise, only the logged-in user's requests are returned.
@@ -1781,6 +2295,41 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /settings/plex/users (the `GetSettingsPlexUsers` operationId).
 	GetSettingsPlexUsers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTvTvId Get TV details
+	//
+	// Returns full TV details in a JSON object.
+	//
+	// Corresponds with GET /tv/{tvId} (the `GetTvTvId` operationId).
+	GetTvTvId(ctx context.Context, tvId float32, params *GetTvTvIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTvTvIdRatings Get TV ratings
+	//
+	// Returns ratings based on provided tvId in a JSON object.
+	//
+	// Corresponds with GET /tv/{tvId}/ratings (the `GetTvTvIdRatings` operationId).
+	GetTvTvIdRatings(ctx context.Context, tvId float32, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTvTvIdRecommendations Get recommended TV series
+	//
+	// Returns list of recommended TV series based on the provided tvId in a JSON object.
+	//
+	// Corresponds with GET /tv/{tvId}/recommendations (the `GetTvTvIdRecommendations` operationId).
+	GetTvTvIdRecommendations(ctx context.Context, tvId float32, params *GetTvTvIdRecommendationsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTvTvIdSeasonSeasonNumber Get season details and episode list
+	//
+	// Returns season details with a list of episodes in a JSON object.
+	//
+	// Corresponds with GET /tv/{tvId}/season/{seasonNumber} (the `GetTvTvIdSeasonSeasonNumber` operationId).
+	GetTvTvIdSeasonSeasonNumber(ctx context.Context, tvId float32, seasonNumber float32, params *GetTvTvIdSeasonSeasonNumberParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTvTvIdSimilar Get similar TV series
+	//
+	// Returns list of similar TV series based on the provided tvId in a JSON object.
+	//
+	// Corresponds with GET /tv/{tvId}/similar (the `GetTvTvIdSimilar` operationId).
+	GetTvTvIdSimilar(ctx context.Context, tvId float32, params *GetTvTvIdSimilarParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUser Get all users
 	//
@@ -2500,6 +3049,91 @@ func (c *Client) GetDiscoverWatchlist(ctx context.Context, params *GetDiscoverWa
 	return c.Client.Do(req)
 }
 
+// GetMovieMovieId Get movie details
+//
+// Returns full movie details in a JSON object.
+//
+// Corresponds with GET /movie/{movieId} (the `GetMovieMovieId` operationId).
+func (c *Client) GetMovieMovieId(ctx context.Context, movieId float32, params *GetMovieMovieIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMovieMovieIdRequest(c.Server, movieId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMovieMovieIdRatings Get movie ratings
+//
+// Returns ratings based on the provided movieId in a JSON object.
+//
+// Corresponds with GET /movie/{movieId}/ratings (the `GetMovieMovieIdRatings` operationId).
+func (c *Client) GetMovieMovieIdRatings(ctx context.Context, movieId float32, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMovieMovieIdRatingsRequest(c.Server, movieId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMovieMovieIdRatingscombined Get RT and IMDB movie ratings combined
+//
+// Returns ratings from RottenTomatoes and IMDB based on the provided movieId in a JSON object.
+//
+// Corresponds with GET /movie/{movieId}/ratingscombined (the `GetMovieMovieIdRatingscombined` operationId).
+func (c *Client) GetMovieMovieIdRatingscombined(ctx context.Context, movieId float32, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMovieMovieIdRatingscombinedRequest(c.Server, movieId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMovieMovieIdRecommendations Get recommended movies
+//
+// Returns list of recommended movies based on provided movie ID in a JSON object.
+//
+// Corresponds with GET /movie/{movieId}/recommendations (the `GetMovieMovieIdRecommendations` operationId).
+func (c *Client) GetMovieMovieIdRecommendations(ctx context.Context, movieId float32, params *GetMovieMovieIdRecommendationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMovieMovieIdRecommendationsRequest(c.Server, movieId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMovieMovieIdSimilar Get similar movies
+//
+// Returns list of similar movies based on the provided movieId in a JSON object.
+//
+// Corresponds with GET /movie/{movieId}/similar (the `GetMovieMovieIdSimilar` operationId).
+func (c *Client) GetMovieMovieIdSimilar(ctx context.Context, movieId float32, params *GetMovieMovieIdSimilarParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMovieMovieIdSimilarRequest(c.Server, movieId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetRequest Get all requests
 //
 // Returns all requests if the user has the `ADMIN` or `MANAGE_REQUESTS` permissions. Otherwise, only the logged-in user's requests are returned.
@@ -2765,6 +3399,91 @@ func (c *Client) GetSettingsJellyfinUsers(ctx context.Context, reqEditors ...Req
 // Corresponds with GET /settings/plex/users (the `GetSettingsPlexUsers` operationId).
 func (c *Client) GetSettingsPlexUsers(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetSettingsPlexUsersRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetTvTvId Get TV details
+//
+// Returns full TV details in a JSON object.
+//
+// Corresponds with GET /tv/{tvId} (the `GetTvTvId` operationId).
+func (c *Client) GetTvTvId(ctx context.Context, tvId float32, params *GetTvTvIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTvTvIdRequest(c.Server, tvId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetTvTvIdRatings Get TV ratings
+//
+// Returns ratings based on provided tvId in a JSON object.
+//
+// Corresponds with GET /tv/{tvId}/ratings (the `GetTvTvIdRatings` operationId).
+func (c *Client) GetTvTvIdRatings(ctx context.Context, tvId float32, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTvTvIdRatingsRequest(c.Server, tvId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetTvTvIdRecommendations Get recommended TV series
+//
+// Returns list of recommended TV series based on the provided tvId in a JSON object.
+//
+// Corresponds with GET /tv/{tvId}/recommendations (the `GetTvTvIdRecommendations` operationId).
+func (c *Client) GetTvTvIdRecommendations(ctx context.Context, tvId float32, params *GetTvTvIdRecommendationsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTvTvIdRecommendationsRequest(c.Server, tvId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetTvTvIdSeasonSeasonNumber Get season details and episode list
+//
+// Returns season details with a list of episodes in a JSON object.
+//
+// Corresponds with GET /tv/{tvId}/season/{seasonNumber} (the `GetTvTvIdSeasonSeasonNumber` operationId).
+func (c *Client) GetTvTvIdSeasonSeasonNumber(ctx context.Context, tvId float32, seasonNumber float32, params *GetTvTvIdSeasonSeasonNumberParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTvTvIdSeasonSeasonNumberRequest(c.Server, tvId, seasonNumber, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetTvTvIdSimilar Get similar TV series
+//
+// Returns list of similar TV series based on the provided tvId in a JSON object.
+//
+// Corresponds with GET /tv/{tvId}/similar (the `GetTvTvIdSimilar` operationId).
+func (c *Client) GetTvTvIdSimilar(ctx context.Context, tvId float32, params *GetTvTvIdSimilarParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTvTvIdSimilarRequest(c.Server, tvId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -5209,6 +5928,281 @@ func NewGetDiscoverWatchlistRequest(server string, params *GetDiscoverWatchlistP
 	return req, nil
 }
 
+// NewGetMovieMovieIdRequest constructs an http.Request for the GetMovieMovieId method
+func NewGetMovieMovieIdRequest(server string, movieId float32, params *GetMovieMovieIdParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "movieId", movieId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/movie/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Language != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "language", *params.Language, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMovieMovieIdRatingsRequest constructs an http.Request for the GetMovieMovieIdRatings method
+func NewGetMovieMovieIdRatingsRequest(server string, movieId float32) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "movieId", movieId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/movie/%s/ratings", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMovieMovieIdRatingscombinedRequest constructs an http.Request for the GetMovieMovieIdRatingscombined method
+func NewGetMovieMovieIdRatingscombinedRequest(server string, movieId float32) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "movieId", movieId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/movie/%s/ratingscombined", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMovieMovieIdRecommendationsRequest constructs an http.Request for the GetMovieMovieIdRecommendations method
+func NewGetMovieMovieIdRecommendationsRequest(server string, movieId float32, params *GetMovieMovieIdRecommendationsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "movieId", movieId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/movie/%s/recommendations", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "number", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Language != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "language", *params.Language, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetMovieMovieIdSimilarRequest constructs an http.Request for the GetMovieMovieIdSimilar method
+func NewGetMovieMovieIdSimilarRequest(server string, movieId float32, params *GetMovieMovieIdSimilarParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "movieId", movieId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/movie/%s/similar", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "number", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Language != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "language", *params.Language, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetRequestRequest constructs an http.Request for the GetRequest method
 func NewGetRequestRequest(server string, params *GetRequestParams) (*http.Request, error) {
 	var err error
@@ -5834,6 +6828,315 @@ func NewGetSettingsPlexUsersRequest(server string) (*http.Request, error) {
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTvTvIdRequest constructs an http.Request for the GetTvTvId method
+func NewGetTvTvIdRequest(server string, tvId float32, params *GetTvTvIdParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "tvId", tvId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/tv/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Language != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "language", *params.Language, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTvTvIdRatingsRequest constructs an http.Request for the GetTvTvIdRatings method
+func NewGetTvTvIdRatingsRequest(server string, tvId float32) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "tvId", tvId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/tv/%s/ratings", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTvTvIdRecommendationsRequest constructs an http.Request for the GetTvTvIdRecommendations method
+func NewGetTvTvIdRecommendationsRequest(server string, tvId float32, params *GetTvTvIdRecommendationsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "tvId", tvId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/tv/%s/recommendations", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "number", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Language != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "language", *params.Language, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTvTvIdSeasonSeasonNumberRequest constructs an http.Request for the GetTvTvIdSeasonSeasonNumber method
+func NewGetTvTvIdSeasonSeasonNumberRequest(server string, tvId float32, seasonNumber float32, params *GetTvTvIdSeasonSeasonNumberParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "tvId", tvId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "seasonNumber", seasonNumber, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/tv/%s/season/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Language != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "language", *params.Language, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTvTvIdSimilarRequest constructs an http.Request for the GetTvTvIdSimilar method
+func NewGetTvTvIdSimilarRequest(server string, tvId float32, params *GetTvTvIdSimilarParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "tvId", tvId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "number", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/tv/%s/similar", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "page", *params.Page, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "number", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Language != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "language", *params.Language, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -7380,6 +8683,51 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /discover/watchlist (the `GetDiscoverWatchlist` operationId).
 	GetDiscoverWatchlistWithResponse(ctx context.Context, params *GetDiscoverWatchlistParams, reqEditors ...RequestEditorFn) (*GetDiscoverWatchlistResponse, error)
 
+	// GetMovieMovieIdWithResponse Get movie details
+	//
+	// Returns full movie details in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /movie/{movieId} (the `GetMovieMovieId` operationId).
+	GetMovieMovieIdWithResponse(ctx context.Context, movieId float32, params *GetMovieMovieIdParams, reqEditors ...RequestEditorFn) (*GetMovieMovieIdResponse, error)
+
+	// GetMovieMovieIdRatingsWithResponse Get movie ratings
+	//
+	// Returns ratings based on the provided movieId in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /movie/{movieId}/ratings (the `GetMovieMovieIdRatings` operationId).
+	GetMovieMovieIdRatingsWithResponse(ctx context.Context, movieId float32, reqEditors ...RequestEditorFn) (*GetMovieMovieIdRatingsResponse, error)
+
+	// GetMovieMovieIdRatingscombinedWithResponse Get RT and IMDB movie ratings combined
+	//
+	// Returns ratings from RottenTomatoes and IMDB based on the provided movieId in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /movie/{movieId}/ratingscombined (the `GetMovieMovieIdRatingscombined` operationId).
+	GetMovieMovieIdRatingscombinedWithResponse(ctx context.Context, movieId float32, reqEditors ...RequestEditorFn) (*GetMovieMovieIdRatingscombinedResponse, error)
+
+	// GetMovieMovieIdRecommendationsWithResponse Get recommended movies
+	//
+	// Returns list of recommended movies based on provided movie ID in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /movie/{movieId}/recommendations (the `GetMovieMovieIdRecommendations` operationId).
+	GetMovieMovieIdRecommendationsWithResponse(ctx context.Context, movieId float32, params *GetMovieMovieIdRecommendationsParams, reqEditors ...RequestEditorFn) (*GetMovieMovieIdRecommendationsResponse, error)
+
+	// GetMovieMovieIdSimilarWithResponse Get similar movies
+	//
+	// Returns list of similar movies based on the provided movieId in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /movie/{movieId}/similar (the `GetMovieMovieIdSimilar` operationId).
+	GetMovieMovieIdSimilarWithResponse(ctx context.Context, movieId float32, params *GetMovieMovieIdSimilarParams, reqEditors ...RequestEditorFn) (*GetMovieMovieIdSimilarResponse, error)
+
 	// GetRequestWithResponse Get all requests
 	//
 	// Returns all requests if the user has the `ADMIN` or `MANAGE_REQUESTS` permissions. Otherwise, only the logged-in user's requests are returned.
@@ -7526,6 +8874,51 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /settings/plex/users (the `GetSettingsPlexUsers` operationId).
 	GetSettingsPlexUsersWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetSettingsPlexUsersResponse, error)
+
+	// GetTvTvIdWithResponse Get TV details
+	//
+	// Returns full TV details in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /tv/{tvId} (the `GetTvTvId` operationId).
+	GetTvTvIdWithResponse(ctx context.Context, tvId float32, params *GetTvTvIdParams, reqEditors ...RequestEditorFn) (*GetTvTvIdResponse, error)
+
+	// GetTvTvIdRatingsWithResponse Get TV ratings
+	//
+	// Returns ratings based on provided tvId in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /tv/{tvId}/ratings (the `GetTvTvIdRatings` operationId).
+	GetTvTvIdRatingsWithResponse(ctx context.Context, tvId float32, reqEditors ...RequestEditorFn) (*GetTvTvIdRatingsResponse, error)
+
+	// GetTvTvIdRecommendationsWithResponse Get recommended TV series
+	//
+	// Returns list of recommended TV series based on the provided tvId in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /tv/{tvId}/recommendations (the `GetTvTvIdRecommendations` operationId).
+	GetTvTvIdRecommendationsWithResponse(ctx context.Context, tvId float32, params *GetTvTvIdRecommendationsParams, reqEditors ...RequestEditorFn) (*GetTvTvIdRecommendationsResponse, error)
+
+	// GetTvTvIdSeasonSeasonNumberWithResponse Get season details and episode list
+	//
+	// Returns season details with a list of episodes in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /tv/{tvId}/season/{seasonNumber} (the `GetTvTvIdSeasonSeasonNumber` operationId).
+	GetTvTvIdSeasonSeasonNumberWithResponse(ctx context.Context, tvId float32, seasonNumber float32, params *GetTvTvIdSeasonSeasonNumberParams, reqEditors ...RequestEditorFn) (*GetTvTvIdSeasonSeasonNumberResponse, error)
+
+	// GetTvTvIdSimilarWithResponse Get similar TV series
+	//
+	// Returns list of similar TV series based on the provided tvId in a JSON object.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /tv/{tvId}/similar (the `GetTvTvIdSimilar` operationId).
+	GetTvTvIdSimilarWithResponse(ctx context.Context, tvId float32, params *GetTvTvIdSimilarParams, reqEditors ...RequestEditorFn) (*GetTvTvIdSimilarResponse, error)
 
 	// GetUserWithResponse Get all users
 	//
@@ -9001,6 +10394,347 @@ func (r GetDiscoverWatchlistResponse) ContentType() string {
 	return ""
 }
 
+type GetMovieMovieIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MovieDetails
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMovieMovieIdResponse) GetJSON200() *MovieDetails {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMovieMovieIdResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMovieMovieIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMovieMovieIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMovieMovieIdResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMovieMovieIdRatingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		AudienceRating *GetMovieMovieIdRatings200JSONResponseBodyAudienceRating `json:"audienceRating,omitempty"`
+
+		// AudienceScore Example: 65
+		AudienceScore *float32                                                `json:"audienceScore,omitempty"`
+		CriticsRating *GetMovieMovieIdRatings200JSONResponseBodyCriticsRating `json:"criticsRating,omitempty"`
+
+		// CriticsScore Example: 85
+		CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+		// Title Example: Mulan
+		Title *string `json:"title,omitempty"`
+
+		// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+		Url *string `json:"url,omitempty"`
+
+		// Year Example: 2020
+		Year *float32 `json:"year,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMovieMovieIdRatingsResponse) GetJSON200() *struct {
+	AudienceRating *GetMovieMovieIdRatings200JSONResponseBodyAudienceRating `json:"audienceRating,omitempty"`
+
+	// AudienceScore Example: 65
+	AudienceScore *float32                                                `json:"audienceScore,omitempty"`
+	CriticsRating *GetMovieMovieIdRatings200JSONResponseBodyCriticsRating `json:"criticsRating,omitempty"`
+
+	// CriticsScore Example: 85
+	CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+	// Title Example: Mulan
+	Title *string `json:"title,omitempty"`
+
+	// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+	Url *string `json:"url,omitempty"`
+
+	// Year Example: 2020
+	Year *float32 `json:"year,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMovieMovieIdRatingsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMovieMovieIdRatingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMovieMovieIdRatingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMovieMovieIdRatingsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMovieMovieIdRatingscombinedResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		Imdb *struct {
+			// CriticsScore Example: 6.5
+			CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+			// Title Example: I am Legend
+			Title *string `json:"title,omitempty"`
+
+			// Url Example: https://www.imdb.com/title/tt0480249
+			Url *string `json:"url,omitempty"`
+		} `json:"imdb,omitempty"`
+		Rt *struct {
+			AudienceRating *GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating `json:"audienceRating,omitempty"`
+
+			// AudienceScore Example: 65
+			AudienceScore *float32                                                          `json:"audienceScore,omitempty"`
+			CriticsRating *GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating `json:"criticsRating,omitempty"`
+
+			// CriticsScore Example: 85
+			CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+			// Title Example: Mulan
+			Title *string `json:"title,omitempty"`
+
+			// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+			Url *string `json:"url,omitempty"`
+
+			// Year Example: 2020
+			Year *float32 `json:"year,omitempty"`
+		} `json:"rt,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMovieMovieIdRatingscombinedResponse) GetJSON200() *struct {
+	Imdb *struct {
+		// CriticsScore Example: 6.5
+		CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+		// Title Example: I am Legend
+		Title *string `json:"title,omitempty"`
+
+		// Url Example: https://www.imdb.com/title/tt0480249
+		Url *string `json:"url,omitempty"`
+	} `json:"imdb,omitempty"`
+	Rt *struct {
+		AudienceRating *GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating `json:"audienceRating,omitempty"`
+
+		// AudienceScore Example: 65
+		AudienceScore *float32                                                          `json:"audienceScore,omitempty"`
+		CriticsRating *GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating `json:"criticsRating,omitempty"`
+
+		// CriticsScore Example: 85
+		CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+		// Title Example: Mulan
+		Title *string `json:"title,omitempty"`
+
+		// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+		Url *string `json:"url,omitempty"`
+
+		// Year Example: 2020
+		Year *float32 `json:"year,omitempty"`
+	} `json:"rt,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMovieMovieIdRatingscombinedResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMovieMovieIdRatingscombinedResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMovieMovieIdRatingscombinedResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMovieMovieIdRatingscombinedResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMovieMovieIdRecommendationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		// Page Example: 1
+		Page    *float32       `json:"page,omitempty"`
+		Results *[]MovieResult `json:"results,omitempty"`
+
+		// TotalPages Example: 20
+		TotalPages *float32 `json:"totalPages,omitempty"`
+
+		// TotalResults Example: 200
+		TotalResults *float32 `json:"totalResults,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMovieMovieIdRecommendationsResponse) GetJSON200() *struct {
+	// Page Example: 1
+	Page    *float32       `json:"page,omitempty"`
+	Results *[]MovieResult `json:"results,omitempty"`
+
+	// TotalPages Example: 20
+	TotalPages *float32 `json:"totalPages,omitempty"`
+
+	// TotalResults Example: 200
+	TotalResults *float32 `json:"totalResults,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMovieMovieIdRecommendationsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMovieMovieIdRecommendationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMovieMovieIdRecommendationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMovieMovieIdRecommendationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMovieMovieIdSimilarResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		// Page Example: 1
+		Page    *float32       `json:"page,omitempty"`
+		Results *[]MovieResult `json:"results,omitempty"`
+
+		// TotalPages Example: 20
+		TotalPages *float32 `json:"totalPages,omitempty"`
+
+		// TotalResults Example: 200
+		TotalResults *float32 `json:"totalResults,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMovieMovieIdSimilarResponse) GetJSON200() *struct {
+	// Page Example: 1
+	Page    *float32       `json:"page,omitempty"`
+	Results *[]MovieResult `json:"results,omitempty"`
+
+	// TotalPages Example: 20
+	TotalPages *float32 `json:"totalPages,omitempty"`
+
+	// TotalResults Example: 200
+	TotalResults *float32 `json:"totalResults,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMovieMovieIdSimilarResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMovieMovieIdSimilarResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMovieMovieIdSimilarResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMovieMovieIdSimilarResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetRequestResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -9629,6 +11363,279 @@ func (r GetSettingsPlexUsersResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetSettingsPlexUsersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTvTvIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *TvDetails
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetTvTvIdResponse) GetJSON200() *TvDetails {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetTvTvIdResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTvTvIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTvTvIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTvTvIdResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTvTvIdRatingsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		CriticsRating *GetTvTvIdRatings200JSONResponseBodyCriticsRating `json:"criticsRating,omitempty"`
+
+		// CriticsScore Example: 85
+		CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+		// Title Example: The Boys
+		Title *string `json:"title,omitempty"`
+
+		// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+		Url *string `json:"url,omitempty"`
+
+		// Year Example: 2019
+		Year *float32 `json:"year,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetTvTvIdRatingsResponse) GetJSON200() *struct {
+	CriticsRating *GetTvTvIdRatings200JSONResponseBodyCriticsRating `json:"criticsRating,omitempty"`
+
+	// CriticsScore Example: 85
+	CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+	// Title Example: The Boys
+	Title *string `json:"title,omitempty"`
+
+	// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+	Url *string `json:"url,omitempty"`
+
+	// Year Example: 2019
+	Year *float32 `json:"year,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetTvTvIdRatingsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTvTvIdRatingsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTvTvIdRatingsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTvTvIdRatingsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTvTvIdRecommendationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		// Page Example: 1
+		Page    *float32    `json:"page,omitempty"`
+		Results *[]TvResult `json:"results,omitempty"`
+
+		// TotalPages Example: 20
+		TotalPages *float32 `json:"totalPages,omitempty"`
+
+		// TotalResults Example: 200
+		TotalResults *float32 `json:"totalResults,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetTvTvIdRecommendationsResponse) GetJSON200() *struct {
+	// Page Example: 1
+	Page    *float32    `json:"page,omitempty"`
+	Results *[]TvResult `json:"results,omitempty"`
+
+	// TotalPages Example: 20
+	TotalPages *float32 `json:"totalPages,omitempty"`
+
+	// TotalResults Example: 200
+	TotalResults *float32 `json:"totalResults,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetTvTvIdRecommendationsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTvTvIdRecommendationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTvTvIdRecommendationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTvTvIdRecommendationsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTvTvIdSeasonSeasonNumberResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Season
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetTvTvIdSeasonSeasonNumberResponse) GetJSON200() *Season {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetTvTvIdSeasonSeasonNumberResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTvTvIdSeasonSeasonNumberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTvTvIdSeasonSeasonNumberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTvTvIdSeasonSeasonNumberResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTvTvIdSimilarResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *struct {
+		// Page Example: 1
+		Page    *float32    `json:"page,omitempty"`
+		Results *[]TvResult `json:"results,omitempty"`
+
+		// TotalPages Example: 20
+		TotalPages *float32 `json:"totalPages,omitempty"`
+
+		// TotalResults Example: 200
+		TotalResults *float32 `json:"totalResults,omitempty"`
+	}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetTvTvIdSimilarResponse) GetJSON200() *struct {
+	// Page Example: 1
+	Page    *float32    `json:"page,omitempty"`
+	Results *[]TvResult `json:"results,omitempty"`
+
+	// TotalPages Example: 20
+	TotalPages *float32 `json:"totalPages,omitempty"`
+
+	// TotalResults Example: 200
+	TotalResults *float32 `json:"totalResults,omitempty"`
+} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetTvTvIdSimilarResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTvTvIdSimilarResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTvTvIdSimilarResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTvTvIdSimilarResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -11253,6 +13260,81 @@ func (c *ClientWithResponses) GetDiscoverWatchlistWithResponse(ctx context.Conte
 	return ParseGetDiscoverWatchlistResponse(rsp)
 }
 
+// GetMovieMovieIdWithResponse Get movie details
+//
+// Returns full movie details in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /movie/{movieId} (the `GetMovieMovieId` operationId).
+func (c *ClientWithResponses) GetMovieMovieIdWithResponse(ctx context.Context, movieId float32, params *GetMovieMovieIdParams, reqEditors ...RequestEditorFn) (*GetMovieMovieIdResponse, error) {
+	rsp, err := c.GetMovieMovieId(ctx, movieId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMovieMovieIdResponse(rsp)
+}
+
+// GetMovieMovieIdRatingsWithResponse Get movie ratings
+//
+// Returns ratings based on the provided movieId in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /movie/{movieId}/ratings (the `GetMovieMovieIdRatings` operationId).
+func (c *ClientWithResponses) GetMovieMovieIdRatingsWithResponse(ctx context.Context, movieId float32, reqEditors ...RequestEditorFn) (*GetMovieMovieIdRatingsResponse, error) {
+	rsp, err := c.GetMovieMovieIdRatings(ctx, movieId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMovieMovieIdRatingsResponse(rsp)
+}
+
+// GetMovieMovieIdRatingscombinedWithResponse Get RT and IMDB movie ratings combined
+//
+// Returns ratings from RottenTomatoes and IMDB based on the provided movieId in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /movie/{movieId}/ratingscombined (the `GetMovieMovieIdRatingscombined` operationId).
+func (c *ClientWithResponses) GetMovieMovieIdRatingscombinedWithResponse(ctx context.Context, movieId float32, reqEditors ...RequestEditorFn) (*GetMovieMovieIdRatingscombinedResponse, error) {
+	rsp, err := c.GetMovieMovieIdRatingscombined(ctx, movieId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMovieMovieIdRatingscombinedResponse(rsp)
+}
+
+// GetMovieMovieIdRecommendationsWithResponse Get recommended movies
+//
+// Returns list of recommended movies based on provided movie ID in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /movie/{movieId}/recommendations (the `GetMovieMovieIdRecommendations` operationId).
+func (c *ClientWithResponses) GetMovieMovieIdRecommendationsWithResponse(ctx context.Context, movieId float32, params *GetMovieMovieIdRecommendationsParams, reqEditors ...RequestEditorFn) (*GetMovieMovieIdRecommendationsResponse, error) {
+	rsp, err := c.GetMovieMovieIdRecommendations(ctx, movieId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMovieMovieIdRecommendationsResponse(rsp)
+}
+
+// GetMovieMovieIdSimilarWithResponse Get similar movies
+//
+// Returns list of similar movies based on the provided movieId in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /movie/{movieId}/similar (the `GetMovieMovieIdSimilar` operationId).
+func (c *ClientWithResponses) GetMovieMovieIdSimilarWithResponse(ctx context.Context, movieId float32, params *GetMovieMovieIdSimilarParams, reqEditors ...RequestEditorFn) (*GetMovieMovieIdSimilarResponse, error) {
+	rsp, err := c.GetMovieMovieIdSimilar(ctx, movieId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMovieMovieIdSimilarResponse(rsp)
+}
+
 // GetRequestWithResponse Get all requests
 //
 // Returns all requests if the user has the `ADMIN` or `MANAGE_REQUESTS` permissions. Otherwise, only the logged-in user's requests are returned.
@@ -11488,6 +13570,81 @@ func (c *ClientWithResponses) GetSettingsPlexUsersWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseGetSettingsPlexUsersResponse(rsp)
+}
+
+// GetTvTvIdWithResponse Get TV details
+//
+// Returns full TV details in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /tv/{tvId} (the `GetTvTvId` operationId).
+func (c *ClientWithResponses) GetTvTvIdWithResponse(ctx context.Context, tvId float32, params *GetTvTvIdParams, reqEditors ...RequestEditorFn) (*GetTvTvIdResponse, error) {
+	rsp, err := c.GetTvTvId(ctx, tvId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTvTvIdResponse(rsp)
+}
+
+// GetTvTvIdRatingsWithResponse Get TV ratings
+//
+// Returns ratings based on provided tvId in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /tv/{tvId}/ratings (the `GetTvTvIdRatings` operationId).
+func (c *ClientWithResponses) GetTvTvIdRatingsWithResponse(ctx context.Context, tvId float32, reqEditors ...RequestEditorFn) (*GetTvTvIdRatingsResponse, error) {
+	rsp, err := c.GetTvTvIdRatings(ctx, tvId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTvTvIdRatingsResponse(rsp)
+}
+
+// GetTvTvIdRecommendationsWithResponse Get recommended TV series
+//
+// Returns list of recommended TV series based on the provided tvId in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /tv/{tvId}/recommendations (the `GetTvTvIdRecommendations` operationId).
+func (c *ClientWithResponses) GetTvTvIdRecommendationsWithResponse(ctx context.Context, tvId float32, params *GetTvTvIdRecommendationsParams, reqEditors ...RequestEditorFn) (*GetTvTvIdRecommendationsResponse, error) {
+	rsp, err := c.GetTvTvIdRecommendations(ctx, tvId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTvTvIdRecommendationsResponse(rsp)
+}
+
+// GetTvTvIdSeasonSeasonNumberWithResponse Get season details and episode list
+//
+// Returns season details with a list of episodes in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /tv/{tvId}/season/{seasonNumber} (the `GetTvTvIdSeasonSeasonNumber` operationId).
+func (c *ClientWithResponses) GetTvTvIdSeasonSeasonNumberWithResponse(ctx context.Context, tvId float32, seasonNumber float32, params *GetTvTvIdSeasonSeasonNumberParams, reqEditors ...RequestEditorFn) (*GetTvTvIdSeasonSeasonNumberResponse, error) {
+	rsp, err := c.GetTvTvIdSeasonSeasonNumber(ctx, tvId, seasonNumber, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTvTvIdSeasonSeasonNumberResponse(rsp)
+}
+
+// GetTvTvIdSimilarWithResponse Get similar TV series
+//
+// Returns list of similar TV series based on the provided tvId in a JSON object.
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /tv/{tvId}/similar (the `GetTvTvIdSimilar` operationId).
+func (c *ClientWithResponses) GetTvTvIdSimilarWithResponse(ctx context.Context, tvId float32, params *GetTvTvIdSimilarParams, reqEditors ...RequestEditorFn) (*GetTvTvIdSimilarResponse, error) {
+	rsp, err := c.GetTvTvIdSimilar(ctx, tvId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTvTvIdSimilarResponse(rsp)
 }
 
 // GetUserWithResponse Get all users
@@ -12786,6 +14943,204 @@ func ParseGetDiscoverWatchlistResponse(rsp *http.Response) (*GetDiscoverWatchlis
 	return response, nil
 }
 
+// ParseGetMovieMovieIdResponse parses an HTTP response from a GetMovieMovieIdWithResponse call
+func ParseGetMovieMovieIdResponse(rsp *http.Response) (*GetMovieMovieIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMovieMovieIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MovieDetails
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMovieMovieIdRatingsResponse parses an HTTP response from a GetMovieMovieIdRatingsWithResponse call
+func ParseGetMovieMovieIdRatingsResponse(rsp *http.Response) (*GetMovieMovieIdRatingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMovieMovieIdRatingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			AudienceRating *GetMovieMovieIdRatings200JSONResponseBodyAudienceRating `json:"audienceRating,omitempty"`
+
+			// AudienceScore Example: 65
+			AudienceScore *float32                                                `json:"audienceScore,omitempty"`
+			CriticsRating *GetMovieMovieIdRatings200JSONResponseBodyCriticsRating `json:"criticsRating,omitempty"`
+
+			// CriticsScore Example: 85
+			CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+			// Title Example: Mulan
+			Title *string `json:"title,omitempty"`
+
+			// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+			Url *string `json:"url,omitempty"`
+
+			// Year Example: 2020
+			Year *float32 `json:"year,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMovieMovieIdRatingscombinedResponse parses an HTTP response from a GetMovieMovieIdRatingscombinedWithResponse call
+func ParseGetMovieMovieIdRatingscombinedResponse(rsp *http.Response) (*GetMovieMovieIdRatingscombinedResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMovieMovieIdRatingscombinedResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Imdb *struct {
+				// CriticsScore Example: 6.5
+				CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+				// Title Example: I am Legend
+				Title *string `json:"title,omitempty"`
+
+				// Url Example: https://www.imdb.com/title/tt0480249
+				Url *string `json:"url,omitempty"`
+			} `json:"imdb,omitempty"`
+			Rt *struct {
+				AudienceRating *GetMovieMovieIdRatingscombined200JSONResponseBodyRtAudienceRating `json:"audienceRating,omitempty"`
+
+				// AudienceScore Example: 65
+				AudienceScore *float32                                                          `json:"audienceScore,omitempty"`
+				CriticsRating *GetMovieMovieIdRatingscombined200JSONResponseBodyRtCriticsRating `json:"criticsRating,omitempty"`
+
+				// CriticsScore Example: 85
+				CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+				// Title Example: Mulan
+				Title *string `json:"title,omitempty"`
+
+				// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+				Url *string `json:"url,omitempty"`
+
+				// Year Example: 2020
+				Year *float32 `json:"year,omitempty"`
+			} `json:"rt,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMovieMovieIdRecommendationsResponse parses an HTTP response from a GetMovieMovieIdRecommendationsWithResponse call
+func ParseGetMovieMovieIdRecommendationsResponse(rsp *http.Response) (*GetMovieMovieIdRecommendationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMovieMovieIdRecommendationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Page Example: 1
+			Page    *float32       `json:"page,omitempty"`
+			Results *[]MovieResult `json:"results,omitempty"`
+
+			// TotalPages Example: 20
+			TotalPages *float32 `json:"totalPages,omitempty"`
+
+			// TotalResults Example: 200
+			TotalResults *float32 `json:"totalResults,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMovieMovieIdSimilarResponse parses an HTTP response from a GetMovieMovieIdSimilarWithResponse call
+func ParseGetMovieMovieIdSimilarResponse(rsp *http.Response) (*GetMovieMovieIdSimilarResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMovieMovieIdSimilarResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Page Example: 1
+			Page    *float32       `json:"page,omitempty"`
+			Results *[]MovieResult `json:"results,omitempty"`
+
+			// TotalPages Example: 20
+			TotalPages *float32 `json:"totalPages,omitempty"`
+
+			// TotalResults Example: 200
+			TotalResults *float32 `json:"totalResults,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetRequestResponse parses an HTTP response from a GetRequestWithResponse call
 func ParseGetRequestResponse(rsp *http.Response) (*GetRequestResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -13169,6 +15524,170 @@ func ParseGetSettingsPlexUsersResponse(rsp *http.Response) (*GetSettingsPlexUser
 			Thumb    *string `json:"thumb,omitempty"`
 			Title    *string `json:"title,omitempty"`
 			Username *string `json:"username,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTvTvIdResponse parses an HTTP response from a GetTvTvIdWithResponse call
+func ParseGetTvTvIdResponse(rsp *http.Response) (*GetTvTvIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTvTvIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TvDetails
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTvTvIdRatingsResponse parses an HTTP response from a GetTvTvIdRatingsWithResponse call
+func ParseGetTvTvIdRatingsResponse(rsp *http.Response) (*GetTvTvIdRatingsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTvTvIdRatingsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			CriticsRating *GetTvTvIdRatings200JSONResponseBodyCriticsRating `json:"criticsRating,omitempty"`
+
+			// CriticsScore Example: 85
+			CriticsScore *float32 `json:"criticsScore,omitempty"`
+
+			// Title Example: The Boys
+			Title *string `json:"title,omitempty"`
+
+			// Url Example: http://www.rottentomatoes.com/m/mulan_2020/
+			Url *string `json:"url,omitempty"`
+
+			// Year Example: 2019
+			Year *float32 `json:"year,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTvTvIdRecommendationsResponse parses an HTTP response from a GetTvTvIdRecommendationsWithResponse call
+func ParseGetTvTvIdRecommendationsResponse(rsp *http.Response) (*GetTvTvIdRecommendationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTvTvIdRecommendationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Page Example: 1
+			Page    *float32    `json:"page,omitempty"`
+			Results *[]TvResult `json:"results,omitempty"`
+
+			// TotalPages Example: 20
+			TotalPages *float32 `json:"totalPages,omitempty"`
+
+			// TotalResults Example: 200
+			TotalResults *float32 `json:"totalResults,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTvTvIdSeasonSeasonNumberResponse parses an HTTP response from a GetTvTvIdSeasonSeasonNumberWithResponse call
+func ParseGetTvTvIdSeasonSeasonNumberResponse(rsp *http.Response) (*GetTvTvIdSeasonSeasonNumberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTvTvIdSeasonSeasonNumberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Season
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTvTvIdSimilarResponse parses an HTTP response from a GetTvTvIdSimilarWithResponse call
+func ParseGetTvTvIdSimilarResponse(rsp *http.Response) (*GetTvTvIdSimilarResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTvTvIdSimilarResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Page Example: 1
+			Page    *float32    `json:"page,omitempty"`
+			Results *[]TvResult `json:"results,omitempty"`
+
+			// TotalPages Example: 20
+			TotalPages *float32 `json:"totalPages,omitempty"`
+
+			// TotalResults Example: 200
+			TotalResults *float32 `json:"totalResults,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err

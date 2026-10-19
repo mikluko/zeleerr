@@ -33,6 +33,7 @@ func main() {
 type config struct {
 	addr, userHeader     string
 	seerrURL, seerrKey   string
+	seerrPublicURL       string
 	radarrURL, radarrKey string
 	sonarrURL, sonarrKey string
 	permissions          int
@@ -44,10 +45,13 @@ func loadConfig(getenv func(string) string) (config, error) {
 		userHeader: or(getenv("ZELEERR_USER_HEADER"), "X-Auth-Request-Email"),
 		seerrURL:   strings.TrimRight(getenv("SEERR_URL"), "/"),
 		seerrKey:   getenv("SEERR_API_KEY"),
-		radarrURL:  strings.TrimRight(getenv("RADARR_URL"), "/"),
-		radarrKey:  getenv("RADARR_API_KEY"),
-		sonarrURL:  strings.TrimRight(getenv("SONARR_URL"), "/"),
-		sonarrKey:  getenv("SONARR_API_KEY"),
+		// Links go to Seerr's own pages; by default at the address zeleerr
+		// talks to it, which a browser may not reach.
+		seerrPublicURL: strings.TrimRight(or(getenv("SEERR_PUBLIC_URL"), getenv("SEERR_URL")), "/"),
+		radarrURL:      strings.TrimRight(getenv("RADARR_URL"), "/"),
+		radarrKey:      getenv("RADARR_API_KEY"),
+		sonarrURL:      strings.TrimRight(getenv("SONARR_URL"), "/"),
+		sonarrKey:      getenv("SONARR_API_KEY"),
 	}
 	var missing []string
 	for name, v := range map[string]string{
@@ -90,7 +94,7 @@ func run(log *slog.Logger) error {
 		return err
 	}
 
-	srv, err := web.New(catalog.New(sc, rc, soc, cfg.permissions), cfg.userHeader, log)
+	srv, err := web.New(catalog.New(sc, rc, soc, cfg.permissions), cfg.userHeader, cfg.seerrPublicURL, log)
 	if err != nil {
 		return err
 	}
