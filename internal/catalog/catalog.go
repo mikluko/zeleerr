@@ -4,6 +4,7 @@ package catalog
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"net/http"
@@ -83,6 +84,7 @@ func New(s seerr.ClientWithResponsesInterface, r radarr.ClientWithResponsesInter
 }
 
 // UserID returns the Seerr user with the email, creating it if there is none.
+// A created user gets a random password, so Seerr does not need to mail one.
 func (c *Catalog) UserID(ctx context.Context, email string) (int, error) {
 	email = strings.ToLower(strings.TrimSpace(email))
 	if email == "" {
@@ -115,7 +117,9 @@ func (c *Catalog) UserID(ctx context.Context, email string) (int, error) {
 	if id == 0 {
 		name, _, _ := strings.Cut(email, "@")
 		perms := float32(c.permissions)
-		created, err := c.seerr.PostUserWithResponse(ctx, seerr.PostUserJSONRequestBody{Email: &email, Username: &name, Permissions: &perms})
+		// The password is never used: the user acts only through zelirr.
+		password := rand.Text()
+		created, err := c.seerr.PostUserWithResponse(ctx, seerr.PostUserJSONRequestBody{Email: &email, Username: &name, Password: &password, Permissions: &perms})
 		if err != nil {
 			return 0, fmt.Errorf("catalog: create user: %w", err)
 		}

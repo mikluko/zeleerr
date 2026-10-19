@@ -1,0 +1,11 @@
+overlay: 1.0.0
+info:
+  title: What Seerr takes and its spec does not say
+  version: 1.0.0
+actions:
+  # Without a password Seerr mails the new user a generated one, and fails
+  # when email notifications are off.
+  - target: $.paths['/user'].post.requestBody.content['application/json'].schema.properties
+    update:
+      password:
+        type: string

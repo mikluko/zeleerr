@@ -8,3 +8,5 @@ output-options:
     - search
     - request
     - users
+  overlay:
+    path: overlay.yaml

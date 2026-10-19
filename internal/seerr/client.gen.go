@@ -954,6 +954,7 @@ type GetUserParamsSortDirection string
 type PostUserJSONBody struct {
 	// Email Example: hey@itsme.com
 	Email       *string  `json:"email,omitempty"`
+	Password    *string  `json:"password,omitempty"`
 	Permissions *float32 `json:"permissions,omitempty"`
 	Username    *string  `json:"username,omitempty"`
 }

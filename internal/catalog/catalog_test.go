@@ -104,12 +104,13 @@ func TestUserIDCreatesMissingUser(t *testing.T) {
 	var body struct {
 		Email       string  `json:"email"`
 		Username    string  `json:"username"`
+		Password    string  `json:"password"`
 		Permissions float64 `json:"permissions"`
 	}
 	if err := json.Unmarshal([]byte(s.bodies[1]), &body); err != nil {
 		t.Fatal(err)
 	}
-	if body.Email != "jane@example.org" || body.Username != "jane" || body.Permissions != 160 {
+	if body.Email != "jane@example.org" || body.Username != "jane" || body.Permissions != 160 || len(body.Password) < 20 {
 		t.Fatalf("created user = %+v", body)
 	}
 }
