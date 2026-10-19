@@ -88,7 +88,7 @@ func TestSearchShowsRequestButtonOnlyWhenRequestable(t *testing.T) {
 	if code != http.StatusOK {
 		t.Fatalf("code = %d", code)
 	}
-	for _, want := range []string{"Унесённые призраками", "(2001)", `name="tmdbId" value="129"`, "Уже есть"} {
+	for _, want := range []string{"Унесённые призраками", "(2001)", `name="tmdbId" value="129"`, `data-tmdb-id="1399"`, "Уже есть"} {
 		if !strings.Contains(body, want) {
 			t.Errorf("body lacks %q:\n%s", want, body)
 		}

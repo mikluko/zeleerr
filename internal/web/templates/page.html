@@ -37,7 +37,7 @@
 {{- if not .}}<p class="muted">Ничего не нашлось.</p>{{end}}
 <ul class="titles">
 {{- range .}}
-  <li class="title">
+  <li class="title" data-media-type="{{.MediaType}}" data-tmdb-id="{{.TMDBID}}">
     {{- if .Poster}}<img src="{{.Poster}}" alt="" loading="lazy">{{else}}<div class="noposter"></div>{{end}}
     <div class="about">
       <h3>{{.Name}}{{if .Year}} <span class="muted">({{.Year}})</span>{{end}}</h3>
