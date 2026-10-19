@@ -14,9 +14,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mikluko/zelirr/internal/radarr"
-	"github.com/mikluko/zelirr/internal/seerr"
-	"github.com/mikluko/zelirr/internal/sonarr"
+	"github.com/mikluko/zeleerr/internal/radarr"
+	"github.com/mikluko/zeleerr/internal/seerr"
+	"github.com/mikluko/zeleerr/internal/sonarr"
 )
 
 // Status is Seerr's availability of a title; StatusNone means nobody has
@@ -117,7 +117,7 @@ func (c *Catalog) UserID(ctx context.Context, email string) (int, error) {
 
 	if id == 0 {
 		name, _, _ := strings.Cut(email, "@")
-		// The password is never used: the user acts only through zelirr.
+		// The password is never used: the user acts only through zeleerr.
 		password := rand.Text()
 		created, err := c.seerr.PostUserWithResponse(ctx, seerr.PostUserJSONRequestBody{Email: &email, Username: &name, Password: &password})
 		if err != nil {

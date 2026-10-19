@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mikluko/zelirr/internal/catalog"
+	"github.com/mikluko/zeleerr/internal/catalog"
 )
 
 type fakeCatalog struct {

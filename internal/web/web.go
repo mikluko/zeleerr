@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mikluko/zelirr/internal/catalog"
+	"github.com/mikluko/zeleerr/internal/catalog"
 )
 
 //go:embed templates static
@@ -28,7 +28,7 @@ type Catalog interface {
 	Queue(ctx context.Context) ([]catalog.Download, error)
 }
 
-// Server is the HTTP side of zelirr.
+// Server is the HTTP side of zeleerr.
 type Server struct {
 	cat    Catalog
 	header string

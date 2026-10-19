@@ -1,4 +1,4 @@
-# zelirr
+# zeleerr
 
 A one-page front for the family in front of [Seerr](https://github.com/seerr-team/seerr),
 Radarr and Sonarr: search for a movie or a series, request it, and watch the download
@@ -10,8 +10,8 @@ in front of it.
 - The signed-in user's email comes from a request header, `X-Auth-Request-Email` by
   default, as oauth2-proxy sets it with `--set-xauthrequest`. A request without it gets
   401.
-- Each email is matched to a Seerr user. If Seerr has none, zelirr creates a local one
-  and gives it the permissions in `ZELIRR_PERMISSIONS`; a user Seerr already has keeps
+- Each email is matched to a Seerr user. If Seerr has none, zeleerr creates a local one
+  and gives it the permissions in `ZELEERR_PERMISSIONS`; a user Seerr already has keeps
   its own.
 - A request goes to Seerr on behalf of that user. A series is requested with every
   season.
@@ -24,10 +24,10 @@ in front of it.
 SEERR_URL=http://seerr:5055 SEERR_API_KEY=... \
 RADARR_URL=http://radarr:7878 RADARR_API_KEY=... \
 SONARR_URL=http://sonarr:8989 SONARR_API_KEY=... \
-go run ./cmd/zelirr
+go run ./cmd/zeleerr
 ```
 
-The image is `ghcr.io/mikluko/zelirr`.
+The image is `ghcr.io/mikluko/zeleerr`.
 
 ## Configuration
 
@@ -36,9 +36,9 @@ The image is `ghcr.io/mikluko/zelirr`.
 | `SEERR_URL`, `SEERR_API_KEY` | | Seerr, without `/api/v1` |
 | `RADARR_URL`, `RADARR_API_KEY` | | Radarr |
 | `SONARR_URL`, `SONARR_API_KEY` | | Sonarr |
-| `ZELIRR_ADDR` | `:8080` | listen address |
-| `ZELIRR_USER_HEADER` | `X-Auth-Request-Email` | header carrying the user's email |
-| `ZELIRR_PERMISSIONS` | `160` | Seerr permission bits for a user zelirr creates: REQUEST and AUTO_APPROVE |
+| `ZELEERR_ADDR` | `:8080` | listen address |
+| `ZELEERR_USER_HEADER` | `X-Auth-Request-Email` | header carrying the user's email |
+| `ZELEERR_PERMISSIONS` | `160` | Seerr permission bits for a user zeleerr creates: REQUEST and AUTO_APPROVE |
 
 `/healthz` answers without the header.
 

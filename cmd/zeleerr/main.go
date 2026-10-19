@@ -1,4 +1,4 @@
-// Command zelirr serves the family page in front of Seerr, Radarr and Sonarr.
+// Command zeleerr serves the family page in front of Seerr, Radarr and Sonarr.
 // It is configured by the environment; see the README.
 package main
 
@@ -15,17 +15,17 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/mikluko/zelirr/internal/catalog"
-	"github.com/mikluko/zelirr/internal/radarr"
-	"github.com/mikluko/zelirr/internal/seerr"
-	"github.com/mikluko/zelirr/internal/sonarr"
-	"github.com/mikluko/zelirr/internal/web"
+	"github.com/mikluko/zeleerr/internal/catalog"
+	"github.com/mikluko/zeleerr/internal/radarr"
+	"github.com/mikluko/zeleerr/internal/seerr"
+	"github.com/mikluko/zeleerr/internal/sonarr"
+	"github.com/mikluko/zeleerr/internal/web"
 )
 
 func main() {
 	log := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	if err := run(log); err != nil {
-		log.Error("zelirr", "err", err)
+		log.Error("zeleerr", "err", err)
 		os.Exit(1)
 	}
 }
@@ -40,8 +40,8 @@ type config struct {
 
 func loadConfig(getenv func(string) string) (config, error) {
 	c := config{
-		addr:       or(getenv("ZELIRR_ADDR"), ":8080"),
-		userHeader: or(getenv("ZELIRR_USER_HEADER"), "X-Auth-Request-Email"),
+		addr:       or(getenv("ZELEERR_ADDR"), ":8080"),
+		userHeader: or(getenv("ZELEERR_USER_HEADER"), "X-Auth-Request-Email"),
 		seerrURL:   strings.TrimRight(getenv("SEERR_URL"), "/"),
 		seerrKey:   getenv("SEERR_API_KEY"),
 		radarrURL:  strings.TrimRight(getenv("RADARR_URL"), "/"),
@@ -62,9 +62,9 @@ func loadConfig(getenv func(string) string) (config, error) {
 	if len(missing) > 0 {
 		return c, fmt.Errorf("not set: %s", strings.Join(missing, ", "))
 	}
-	perms, err := strconv.Atoi(or(getenv("ZELIRR_PERMISSIONS"), "160"))
+	perms, err := strconv.Atoi(or(getenv("ZELEERR_PERMISSIONS"), "160"))
 	if err != nil {
-		return c, fmt.Errorf("ZELIRR_PERMISSIONS: %w", err)
+		return c, fmt.Errorf("ZELEERR_PERMISSIONS: %w", err)
 	}
 	c.permissions = perms
 	return c, nil

@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mikluko/zelirr/internal/radarr"
-	"github.com/mikluko/zelirr/internal/seerr"
-	"github.com/mikluko/zelirr/internal/sonarr"
+	"github.com/mikluko/zeleerr/internal/radarr"
+	"github.com/mikluko/zeleerr/internal/seerr"
+	"github.com/mikluko/zeleerr/internal/sonarr"
 )
 
 // fake serves canned JSON per "METHOD /path" and records the requests.

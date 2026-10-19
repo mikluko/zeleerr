@@ -1,4 +1,4 @@
-module github.com/mikluko/zelirr
+module github.com/mikluko/zeleerr
 
 go 1.27.2
 
