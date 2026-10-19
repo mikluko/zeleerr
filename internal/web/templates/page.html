@@ -1,0 +1,84 @@
+{{define "page"}}<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="htmx-config" content='{"responseHandling":[{"code":"204","swap":false},{"code":"...","swap":true}]}'>
+<title>Что посмотреть</title>
+<script src="/static/htmx.min.js"></script>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>Что посмотреть</h1>
+  <span class="user">{{.}}</span>
+</header>
+<main>
+  <section>
+    <form hx-get="/search" hx-target="#results" hx-indicator="#searching">
+      <input type="search" name="q" placeholder="Фильм или сериал" autofocus autocomplete="off"
+             hx-get="/search" hx-target="#results" hx-trigger="input changed delay:500ms" hx-indicator="#searching">
+      <span id="searching" class="htmx-indicator">ищем…</span>
+    </form>
+    <div id="results"></div>
+  </section>
+  <section>
+    <h2>Качается</h2>
+    <div id="queue" hx-get="/queue" hx-trigger="load, every 5s">
+      <p class="muted">…</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>
+{{end}}
+
+{{define "results"}}
+{{- if not .}}<p class="muted">Ничего не нашлось.</p>{{end}}
+<ul class="titles">
+{{- range .}}
+  <li class="title">
+    {{- if .Poster}}<img src="{{.Poster}}" alt="" loading="lazy">{{else}}<div class="noposter"></div>{{end}}
+    <div class="about">
+      <h3>{{.Name}}{{if .Year}} <span class="muted">({{.Year}})</span>{{end}}</h3>
+      <p class="kind">{{if eq .MediaType "movie"}}фильм{{else}}сериал{{end}}</p>
+      <p class="overview">{{.Overview}}</p>
+      {{template "action" .}}
+    </div>
+  </li>
+{{- end}}
+</ul>
+{{end}}
+
+{{define "action"}}
+<div class="action">
+{{- if .Status.Requestable}}
+  <form hx-post="/request" hx-target="closest .action" hx-swap="outerHTML" hx-disabled-elt="find button">
+    <input type="hidden" name="mediaType" value="{{.MediaType}}">
+    <input type="hidden" name="tmdbId" value="{{.TMDBID}}">
+    <button type="submit">Заказать</button>
+  </form>
+{{- else if eq .Status 2}}<span class="state">Заказано</span>
+{{- else if eq .Status 3}}<span class="state">Ищем и качаем</span>
+{{- else if eq .Status 4}}<span class="state">Есть частично</span>
+{{- else}}<span class="state ready">Уже есть</span>
+{{- end}}
+</div>
+{{end}}
+
+{{define "queue"}}
+{{- if not .}}<p class="muted">Сейчас ничего не качается.</p>{{end}}
+<ul class="downloads">
+{{- range .}}
+  <li>
+    <div class="line">
+      <span class="name">{{.Name}}</span>{{if .Detail}} <span class="muted">{{.Detail}}</span>{{end}}
+      <span class="eta">{{if .Waiting}}скачано, раскладываем{{else}}{{left .Left}}{{end}}</span>
+    </div>
+    <progress max="100" value="{{percent .Progress}}">{{percent .Progress}}%</progress>
+  </li>
+{{- end}}
+</ul>
+{{end}}
+
+{{define "error"}}<p class="error">Что-то сломалось. Попробуйте ещё раз чуть позже.</p>{{end}}

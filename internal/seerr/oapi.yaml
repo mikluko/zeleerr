@@ -1,0 +1,10 @@
+package: seerr
+output: client.gen.go
+generate:
+  client: true
+  models: true
+output-options:
+  include-tags:
+    - search
+    - request
+    - users
