@@ -89,8 +89,9 @@ func TestUserIDFindsExistingUser(t *testing.T) {
 
 func TestUserIDCreatesMissingUser(t *testing.T) {
 	s := &fake{t: t, responses: map[string]fakeResponse{
-		"GET /api/v1/user":  {200, `{"results":[]}`},
-		"POST /api/v1/user": {201, `{"id":12,"email":"jane@example.org"}`},
+		"GET /api/v1/user":                          {200, `{"results":[]}`},
+		"POST /api/v1/user":                         {201, `{"id":12,"email":"jane@example.org"}`},
+		"POST /api/v1/user/12/settings/permissions": {200, `{"permissions":160}`},
 	}}
 	c := newCatalog(t, s, nil, nil)
 
@@ -101,17 +102,25 @@ func TestUserIDCreatesMissingUser(t *testing.T) {
 	if id != 12 {
 		t.Fatalf("id = %d, want 12", id)
 	}
-	var body struct {
-		Email       string  `json:"email"`
-		Username    string  `json:"username"`
-		Password    string  `json:"password"`
-		Permissions float64 `json:"permissions"`
+	var user struct {
+		Email    string `json:"email"`
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
-	if err := json.Unmarshal([]byte(s.bodies[1]), &body); err != nil {
+	if err := json.Unmarshal([]byte(s.bodies[1]), &user); err != nil {
 		t.Fatal(err)
 	}
-	if body.Email != "jane@example.org" || body.Username != "jane" || body.Permissions != 160 || len(body.Password) < 20 {
-		t.Fatalf("created user = %+v", body)
+	if user.Email != "jane@example.org" || user.Username != "jane" || len(user.Password) < 20 {
+		t.Fatalf("created user = %+v", user)
+	}
+	var perms struct {
+		Permissions float64 `json:"permissions"`
+	}
+	if err := json.Unmarshal([]byte(s.bodies[2]), &perms); err != nil {
+		t.Fatal(err)
+	}
+	if perms.Permissions != 160 {
+		t.Fatalf("permissions = %v, want 160", perms.Permissions)
 	}
 }
 

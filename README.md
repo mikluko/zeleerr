@@ -11,7 +11,8 @@ in front of it.
   default, as oauth2-proxy sets it with `--set-xauthrequest`. A request without it gets
   401.
 - Each email is matched to a Seerr user. If Seerr has none, zelirr creates a local one
-  with the permissions in `ZELIRR_PERMISSIONS`.
+  and gives it the permissions in `ZELIRR_PERMISSIONS`; a user Seerr already has keeps
+  its own.
 - A request goes to Seerr on behalf of that user. A series is requested with every
   season.
 - The queue is read from Radarr and Sonarr directly. A series' episodes are folded into

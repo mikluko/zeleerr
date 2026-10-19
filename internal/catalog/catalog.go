@@ -84,7 +84,8 @@ func New(s seerr.ClientWithResponsesInterface, r radarr.ClientWithResponsesInter
 }
 
 // UserID returns the Seerr user with the email, creating it if there is none.
-// A created user gets a random password, so Seerr does not need to mail one.
+// A created user gets a random password, so Seerr does not need to mail one,
+// and then the permissions: Seerr creates every user with its defaults.
 func (c *Catalog) UserID(ctx context.Context, email string) (int, error) {
 	email = strings.ToLower(strings.TrimSpace(email))
 	if email == "" {
@@ -116,10 +117,9 @@ func (c *Catalog) UserID(ctx context.Context, email string) (int, error) {
 
 	if id == 0 {
 		name, _, _ := strings.Cut(email, "@")
-		perms := float32(c.permissions)
 		// The password is never used: the user acts only through zelirr.
 		password := rand.Text()
-		created, err := c.seerr.PostUserWithResponse(ctx, seerr.PostUserJSONRequestBody{Email: &email, Username: &name, Password: &password, Permissions: &perms})
+		created, err := c.seerr.PostUserWithResponse(ctx, seerr.PostUserJSONRequestBody{Email: &email, Username: &name, Password: &password})
 		if err != nil {
 			return 0, fmt.Errorf("catalog: create user: %w", err)
 		}
@@ -127,6 +127,14 @@ func (c *Catalog) UserID(ctx context.Context, email string) (int, error) {
 			return 0, fmt.Errorf("catalog: create user: %s", created.Status())
 		}
 		id = *created.JSON201.Id
+
+		perms, err := c.seerr.PostUserUserIdSettingsPermissionsWithResponse(ctx, float32(id), seerr.PostUserUserIdSettingsPermissionsJSONRequestBody{Permissions: float32(c.permissions)})
+		if err != nil {
+			return 0, fmt.Errorf("catalog: set permissions: %w", err)
+		}
+		if perms.JSON200 == nil {
+			return 0, fmt.Errorf("catalog: set permissions: %s", perms.Status())
+		}
 	}
 
 	c.mu.Lock()
