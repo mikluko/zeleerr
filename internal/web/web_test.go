@@ -272,3 +272,15 @@ func TestPickedLanguageIsKept(t *testing.T) {
 		t.Errorf("auto does not forget the pick: %v", c)
 	}
 }
+
+func TestLocaleClaimC(t *testing.T) {
+	s := &Server{}
+	for claim, want := range map[string]locale{"C": "en", "POSIX": "en", "ru-RU": "ru", "en-GB": "en"} {
+		req := httptest.NewRequest("GET", "/", nil)
+		req.Header.Set("Accept-Language", "ru")
+		req = req.WithContext(context.WithValue(req.Context(), viewerKey{}, viewer{Profile: profile.Profile{Locale: claim}}))
+		if got := s.locale(req); got != want {
+			t.Errorf("claim %q: locale %q, want %q", claim, got, want)
+		}
+	}
+}
