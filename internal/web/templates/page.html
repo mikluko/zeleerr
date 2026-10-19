@@ -15,7 +15,7 @@
   <div class="viewer">
     <nav class="langs">
       <a href="/lang?to=ru"{{if and .Chosen (eq .Lang "ru")}} class="on"{{end}}>RU</a>
-      <a href="/lang?to=en"{{if and .Chosen (eq .Lang "en")}} class="on"{{end}}>EN</a>
+      <a href="/lang?to=C"{{if and .Chosen (eq .Lang "C")}} class="on"{{end}}>EN</a>
       <a href="/lang?to=auto"{{if not .Chosen}} class="on"{{end}}>{{t "auto"}}</a>
     </nav>
     {{- with .Viewer}}

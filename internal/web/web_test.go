@@ -196,23 +196,31 @@ func TestLanguageFollowsTheBrowser(t *testing.T) {
 	if cat.lang != "ru" {
 		t.Errorf("queue asked in %q, want ru", cat.lang)
 	}
+
+	req := httptest.NewRequest("GET", "/queue", nil)
+	req.Header.Set("X-Auth-Request-Email", "jane@example.org")
+	req.Header.Set("Accept-Language", "de")
+	serve(t, cat, req)
+	if cat.lang != "en" {
+		t.Errorf("C asked TMDB in %q, want en", cat.lang)
+	}
 }
 
 func TestEveryLanguageHasEveryMessage(t *testing.T) {
 	for lang, m := range messages {
-		for key := range messages["en"] {
+		for key := range messages["C"] {
 			if _, ok := m[key]; !ok {
 				t.Errorf("%s lacks %q", lang, key)
 			}
 		}
-		if len(m) != len(messages["en"]) {
-			t.Errorf("%s has %d messages, en %d", lang, len(m), len(messages["en"]))
+		if len(m) != len(messages["C"]) {
+			t.Errorf("%s has %d messages, C %d", lang, len(m), len(messages["C"]))
 		}
 	}
 }
 
 func TestLeft(t *testing.T) {
-	ru, en := locale("ru"), locale("en")
+	ru, en := locale("ru"), locale("C")
 	for d, want := range map[time.Duration][2]string{
 		0:                            {"", ""},
 		30 * time.Second:             {"меньше минуты", "under a minute"},
@@ -248,13 +256,13 @@ func TestPickedLanguageIsKept(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	req := signedIn(httptest.NewRequest("GET", "/lang?to=en", nil))
+	req := signedIn(httptest.NewRequest("GET", "/lang?to=C", nil))
 	s.Handler().ServeHTTP(rec, req)
 	if rec.Code != http.StatusSeeOther {
 		t.Fatalf("code = %d, want 303", rec.Code)
 	}
 	cookies := rec.Result().Cookies()
-	if len(cookies) != 1 || cookies[0].Name != "lang" || cookies[0].Value != "en" {
+	if len(cookies) != 1 || cookies[0].Name != "lang" || cookies[0].Value != "C" {
 		t.Fatalf("cookies = %v", cookies)
 	}
 
@@ -275,7 +283,7 @@ func TestPickedLanguageIsKept(t *testing.T) {
 
 func TestLocaleClaimC(t *testing.T) {
 	s := &Server{}
-	for claim, want := range map[string]locale{"C": "en", "POSIX": "en", "ru-RU": "ru", "en-GB": "en"} {
+	for claim, want := range map[string]locale{"C": "C", "POSIX": "C", "ru-RU": "ru", "en-GB": "C", "de": "C"} {
 		req := httptest.NewRequest("GET", "/", nil)
 		req.Header.Set("Accept-Language", "ru")
 		req = req.WithContext(context.WithValue(req.Context(), viewerKey{}, viewer{Profile: profile.Profile{Locale: claim}}))

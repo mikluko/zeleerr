@@ -58,7 +58,7 @@ type Server struct {
 func New(cat Catalog, opts Options, log *slog.Logger) (*Server, error) {
 	opts.SeerrURL = strings.TrimRight(opts.SeerrURL, "/")
 	s := &Server{cat: cat, opts: opts, log: log}
-	tmpl, err := template.New("").Funcs(s.funcs("en")).ParseFS(assets, "templates/*.html")
+	tmpl, err := template.New("").Funcs(s.funcs("C")).ParseFS(assets, "templates/*.html")
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (s *Server) funcs(l locale) template.FuncMap {
 	return template.FuncMap{
 		"percent": func(p float64) int { return int(p * 100) },
 		"seerr":   s.seerrLink,
-		"lang":    func() string { return string(l) },
+		"lang":    l.tag,
 		"t":       l.t,
 		"left":    l.left,
 		"seasons": l.seasons,
@@ -160,7 +160,7 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		return
 	}
-	titles, err := s.cat.Search(r.Context(), string(s.locale(r)), q)
+	titles, err := s.cat.Search(r.Context(), s.locale(r).tag(), q)
 	if err != nil {
 		s.fail(w, r, err)
 		return
@@ -188,7 +188,7 @@ func (s *Server) request(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) queue(w http.ResponseWriter, r *http.Request) {
-	downloads, err := s.cat.Queue(r.Context(), string(s.locale(r)))
+	downloads, err := s.cat.Queue(r.Context(), s.locale(r).tag())
 	if err != nil {
 		s.fail(w, r, err)
 		return

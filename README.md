@@ -18,10 +18,10 @@ in front of it.
 - The queue is read from Radarr and Sonarr directly. A series' episodes are folded into
   one entry per season. Below the downloads come the requests Seerr is still processing
   with nothing downloading yet.
-- The page speaks English or Russian and names movies and series in that language where
-  TMDB has the name. The language is the one picked on the page, kept in a cookie, else the
-  `locale` claim of the person's OpenID Connect profile, else the browser's
-  `Accept-Language`. Each movie and series links to its page in Seerr.
+- The page speaks Russian, or C, its untranslated English, to anyone asking for another
+  language; it names movies and series in that language where TMDB has the name. The
+  language is the one picked on the page, kept in a cookie, else the `locale` claim of the
+  person's OpenID Connect profile, else the browser's `Accept-Language`. Each movie and series links to its page in Seerr.
 - With `ZELEERR_OIDC_ISSUER` set, the page shows the person's name and picture from the
   provider's userinfo, asked with the access token the proxy passes on.
 

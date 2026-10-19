@@ -9,11 +9,13 @@ import (
 	"golang.org/x/text/language"
 )
 
-// The first is what a browser asking for none of them gets.
-var matcher = language.NewMatcher([]language.Tag{language.English, language.Russian})
+// The translations, matched against what a browser or profile asks for; any
+// other language gets C.
+var matcher = language.NewMatcher([]language.Tag{language.Und, language.Russian})
 
+// messages are C, the untranslated English text, and its translations.
 var messages = map[string]map[string]string{
-	"en": {
+	"C": {
 		"title":         "What to watch",
 		"auto":          "auto",
 		"placeholder":   "Movie or series",
@@ -71,9 +73,17 @@ var messages = map[string]map[string]string{
 	},
 }
 
-// locale is the language a request is answered in, as an ISO 639-1 code
-// that is also what TMDB takes for names.
+// locale is the language a request is answered in: C, or the ISO 639-1 code
+// of a translation.
 type locale string
+
+// tag is the locale as a BCP 47 tag, for TMDB and the page's lang.
+func (l locale) tag() string {
+	if l == "C" {
+		return "en"
+	}
+	return string(l)
+}
 
 // langCookie keeps the language a person picked on the page.
 const langCookie = "lang"
@@ -103,7 +113,7 @@ func (s *Server) locale(r *http.Request) locale {
 	}
 	tags, _, _ := language.ParseAcceptLanguage(header)
 	_, i, _ := matcher.Match(tags...)
-	return []locale{"en", "ru"}[i]
+	return []locale{"C", "ru"}[i]
 }
 
 // t is the message key in the locale, formatted with args when it has verbs.
