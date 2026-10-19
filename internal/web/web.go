@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/mikluko/zeleerr/internal/catalog"
+	"github.com/mikluko/zeleerr/internal/profile"
 )
 
 //go:embed templates static
@@ -27,20 +28,36 @@ type Catalog interface {
 	Queue(ctx context.Context, lang string) ([]catalog.Download, error)
 }
 
-// Server is the HTTP side of zeleerr.
-type Server struct {
-	cat    Catalog
-	header string
-	seerr  string
-	log    *slog.Logger
-	tmpl   *template.Template
+// Profiles is what the page needs of profile.Source.
+type Profiles interface {
+	Lookup(ctx context.Context, token string) (profile.Profile, error)
 }
 
-// New returns a Server that takes the signed-in user's email from the request
-// header userHeader, set by the authenticating proxy in front of it. Movies
-// and series link to their pages in the Seerr at seerrURL.
-func New(cat Catalog, userHeader, seerrURL string, log *slog.Logger) (*Server, error) {
-	s := &Server{cat: cat, header: userHeader, seerr: strings.TrimRight(seerrURL, "/"), log: log}
+// Options configure a Server.
+type Options struct {
+	// UserHeader carries the signed-in person's email, set by the
+	// authenticating proxy in front of the server.
+	UserHeader string
+	// TokenHeader carries their access token, for Profiles; with Profiles nil
+	// the page names people by email.
+	TokenHeader string
+	Profiles    Profiles
+	// SeerrURL is where movies and series link to their pages.
+	SeerrURL string
+}
+
+// Server is the HTTP side of zeleerr.
+type Server struct {
+	cat  Catalog
+	opts Options
+	log  *slog.Logger
+	tmpl *template.Template
+}
+
+// New returns a Server.
+func New(cat Catalog, opts Options, log *slog.Logger) (*Server, error) {
+	opts.SeerrURL = strings.TrimRight(opts.SeerrURL, "/")
+	s := &Server{cat: cat, opts: opts, log: log}
 	tmpl, err := template.New("").Funcs(s.funcs("en")).ParseFS(assets, "templates/*.html")
 	if err != nil {
 		return nil, err
@@ -62,7 +79,7 @@ func (s *Server) funcs(l locale) template.FuncMap {
 }
 
 func (s *Server) seerrLink(mediaType string, tmdbID int) string {
-	return fmt.Sprintf("%s/%s/%d", s.seerr, mediaType, tmdbID)
+	return fmt.Sprintf("%s/%s/%d", s.opts.SeerrURL, mediaType, tmdbID)
 }
 
 // Handler routes the page, its fragments, the static files and /healthz.
@@ -77,6 +94,7 @@ func (s *Server) Handler() http.Handler {
 	app.HandleFunc("GET /search", s.search)
 	app.HandleFunc("POST /request", s.request)
 	app.HandleFunc("GET /queue", s.queue)
+	app.HandleFunc("GET /lang", s.language)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) { _, _ = w.Write([]byte("ok\n")) })
@@ -85,21 +103,55 @@ func (s *Server) Handler() http.Handler {
 	return mux
 }
 
-type userKey struct{}
+// viewer is the signed-in person.
+type viewer struct {
+	Email string
+	profile.Profile
+}
+
+type viewerKey struct{}
+
+func viewerOf(r *http.Request) viewer {
+	v, _ := r.Context().Value(viewerKey{}).(viewer)
+	return v
+}
 
 func (s *Server) identify(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		email := strings.TrimSpace(r.Header.Get(s.header))
-		if email == "" {
-			http.Error(w, localeOf(r).t("who"), http.StatusUnauthorized)
+		v := viewer{Email: strings.TrimSpace(r.Header.Get(s.opts.UserHeader))}
+		if v.Email == "" {
+			http.Error(w, s.locale(r).t("who"), http.StatusUnauthorized)
 			return
 		}
-		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), userKey{}, email)))
+		if s.opts.Profiles != nil {
+			p, err := s.opts.Profiles.Lookup(r.Context(), r.Header.Get(s.opts.TokenHeader))
+			if err != nil {
+				s.log.Warn("profile", "email", v.Email, "err", err)
+			}
+			v.Profile = p
+		}
+		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), viewerKey{}, v)))
 	})
 }
 
 func (s *Server) page(w http.ResponseWriter, r *http.Request) {
-	s.render(w, r, "page", r.Context().Value(userKey{}))
+	s.render(w, r, "page", struct {
+		Viewer viewer
+		Lang   locale
+		Chosen bool
+	}{viewerOf(r), s.locale(r), chosen(r) != ""})
+}
+
+// language keeps the language the person picked, or forgets it for "auto".
+func (s *Server) language(w http.ResponseWriter, r *http.Request) {
+	c := &http.Cookie{Name: langCookie, Path: "/", HttpOnly: true, SameSite: http.SameSiteLaxMode}
+	if l := r.URL.Query().Get("to"); supported(l) {
+		c.Value, c.MaxAge = l, 400*24*60*60
+	} else {
+		c.MaxAge = -1
+	}
+	http.SetCookie(w, c)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (s *Server) search(w http.ResponseWriter, r *http.Request) {
@@ -108,7 +160,7 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		return
 	}
-	titles, err := s.cat.Search(r.Context(), string(localeOf(r)), q)
+	titles, err := s.cat.Search(r.Context(), string(s.locale(r)), q)
 	if err != nil {
 		s.fail(w, r, err)
 		return
@@ -120,10 +172,10 @@ func (s *Server) request(w http.ResponseWriter, r *http.Request) {
 	mediaType := r.FormValue("mediaType")
 	tmdbID, err := strconv.Atoi(r.FormValue("tmdbId"))
 	if err != nil || (mediaType != "movie" && mediaType != "tv") {
-		http.Error(w, localeOf(r).t("bad request"), http.StatusBadRequest)
+		http.Error(w, s.locale(r).t("bad request"), http.StatusBadRequest)
 		return
 	}
-	uid, err := s.cat.UserID(r.Context(), r.Context().Value(userKey{}).(string))
+	uid, err := s.cat.UserID(r.Context(), viewerOf(r).Email)
 	if err != nil {
 		s.fail(w, r, err)
 		return
@@ -136,7 +188,7 @@ func (s *Server) request(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) queue(w http.ResponseWriter, r *http.Request) {
-	downloads, err := s.cat.Queue(r.Context(), string(localeOf(r)))
+	downloads, err := s.cat.Queue(r.Context(), string(s.locale(r)))
 	if err != nil {
 		s.fail(w, r, err)
 		return
@@ -149,7 +201,7 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, dat
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	tmpl, err := s.tmpl.Clone()
 	if err == nil {
-		err = tmpl.Funcs(s.funcs(localeOf(r))).ExecuteTemplate(w, name, data)
+		err = tmpl.Funcs(s.funcs(s.locale(r))).ExecuteTemplate(w, name, data)
 	}
 	if err != nil {
 		s.log.Error("render", "template", name, "err", err)

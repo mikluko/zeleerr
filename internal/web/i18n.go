@@ -15,6 +15,7 @@ var matcher = language.NewMatcher([]language.Tag{language.English, language.Russ
 var messages = map[string]map[string]string{
 	"en": {
 		"title":         "What to watch",
+		"auto":          "auto",
 		"placeholder":   "Movie or series",
 		"searching":     "searching…",
 		"queue":         "Queue",
@@ -42,6 +43,7 @@ var messages = map[string]map[string]string{
 	},
 	"ru": {
 		"title":         "Что посмотреть",
+		"auto":          "авто",
 		"placeholder":   "Фильм или сериал",
 		"searching":     "ищем…",
 		"queue":         "Очередь",
@@ -73,8 +75,33 @@ var messages = map[string]map[string]string{
 // that is also what TMDB takes for names.
 type locale string
 
-func localeOf(r *http.Request) locale {
-	tags, _, _ := language.ParseAcceptLanguage(r.Header.Get("Accept-Language"))
+// langCookie keeps the language a person picked on the page.
+const langCookie = "lang"
+
+func supported(l string) bool {
+	_, ok := messages[l]
+	return ok
+}
+
+// chosen is the language picked on the page, or "".
+func chosen(r *http.Request) string {
+	if c, err := r.Cookie(langCookie); err == nil && supported(c.Value) {
+		return c.Value
+	}
+	return ""
+}
+
+// locale is the language picked on the page, else the locale claim of the
+// person's profile, else the browser's.
+func (s *Server) locale(r *http.Request) locale {
+	if l := chosen(r); l != "" {
+		return locale(l)
+	}
+	header := r.Header.Get("Accept-Language")
+	if claim := viewerOf(r).Locale; claim != "" {
+		header = claim
+	}
+	tags, _, _ := language.ParseAcceptLanguage(header)
 	_, i, _ := matcher.Match(tags...)
 	return []locale{"en", "ru"}[i]
 }

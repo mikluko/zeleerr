@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/mikluko/zeleerr/internal/catalog"
+	"github.com/mikluko/zeleerr/internal/profile"
 	"github.com/mikluko/zeleerr/internal/radarr"
 	"github.com/mikluko/zeleerr/internal/seerr"
 	"github.com/mikluko/zeleerr/internal/sonarr"
@@ -37,6 +38,8 @@ type config struct {
 	radarrURL, radarrKey string
 	sonarrURL, sonarrKey string
 	permissions          int
+	oidcIssuer           string
+	tokenHeader          string
 }
 
 func loadConfig(getenv func(string) string) (config, error) {
@@ -52,6 +55,8 @@ func loadConfig(getenv func(string) string) (config, error) {
 		radarrKey:      getenv("RADARR_API_KEY"),
 		sonarrURL:      strings.TrimRight(getenv("SONARR_URL"), "/"),
 		sonarrKey:      getenv("SONARR_API_KEY"),
+		oidcIssuer:     getenv("ZELEERR_OIDC_ISSUER"),
+		tokenHeader:    or(getenv("ZELEERR_TOKEN_HEADER"), "X-Forwarded-Access-Token"),
 	}
 	var missing []string
 	for name, v := range map[string]string{
@@ -94,7 +99,11 @@ func run(log *slog.Logger) error {
 		return err
 	}
 
-	srv, err := web.New(catalog.New(sc, rc, soc, cfg.permissions), cfg.userHeader, cfg.seerrPublicURL, log)
+	opts := web.Options{UserHeader: cfg.userHeader, TokenHeader: cfg.tokenHeader, SeerrURL: cfg.seerrPublicURL}
+	if cfg.oidcIssuer != "" {
+		opts.Profiles = profile.New(cfg.oidcIssuer, httpc, 10*time.Minute)
+	}
+	srv, err := web.New(catalog.New(sc, rc, soc, cfg.permissions), opts, log)
 	if err != nil {
 		return err
 	}

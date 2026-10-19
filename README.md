@@ -18,9 +18,12 @@ in front of it.
 - The queue is read from Radarr and Sonarr directly. A series' episodes are folded into
   one entry per season. Below the downloads come the requests Seerr is still processing
   with nothing downloading yet.
-- The page speaks English or Russian, whichever the browser's `Accept-Language` prefers,
-  and names movies and series in that language where TMDB has the name. Each links to its
-  page in Seerr.
+- The page speaks English or Russian and names movies and series in that language where
+  TMDB has the name. The language is the one picked on the page, kept in a cookie, else the
+  `locale` claim of the person's OpenID Connect profile, else the browser's
+  `Accept-Language`. Each movie and series links to its page in Seerr.
+- With `ZELEERR_OIDC_ISSUER` set, the page shows the person's name and picture from the
+  provider's userinfo, asked with the access token the proxy passes on.
 
 ## Run it
 
@@ -43,6 +46,8 @@ The image is `ghcr.io/mikluko/zeleerr`.
 | `SONARR_URL`, `SONARR_API_KEY` | | Sonarr |
 | `ZELEERR_ADDR` | `:8080` | listen address |
 | `ZELEERR_USER_HEADER` | `X-Auth-Request-Email` | header carrying the user's email |
+| `ZELEERR_OIDC_ISSUER` | | OpenID Connect issuer for names, pictures and locales; without it people are shown by email |
+| `ZELEERR_TOKEN_HEADER` | `X-Forwarded-Access-Token` | header carrying the access token, as oauth2-proxy sets it with `--pass-access-token` |
 | `ZELEERR_PERMISSIONS` | `160` | Seerr permission bits for a user zeleerr creates: REQUEST and AUTO_APPROVE |
 
 `/healthz` answers without the header.

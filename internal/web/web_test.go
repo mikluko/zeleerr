@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/mikluko/zeleerr/internal/catalog"
+	"github.com/mikluko/zeleerr/internal/profile"
 )
 
 type fakeCatalog struct {
@@ -46,9 +47,19 @@ func (f *fakeCatalog) Queue(_ context.Context, lang string) ([]catalog.Download,
 	return f.downloads, f.err
 }
 
+// fakeProfiles knows the profile of the token "jane".
+type fakeProfiles struct{}
+
+func (fakeProfiles) Lookup(_ context.Context, token string) (profile.Profile, error) {
+	if token != "jane" {
+		return profile.Profile{}, errors.New("unknown token")
+	}
+	return profile.Profile{Name: "Jane Doe", Picture: "https://id.example.org/jane.png", Locale: "ru"}, nil
+}
+
 func serve(t *testing.T, cat Catalog, req *http.Request) (int, string) {
 	t.Helper()
-	s, err := New(cat, "X-Auth-Request-Email", "https://seerr.example.org/", slog.New(slog.DiscardHandler))
+	s, err := New(cat, Options{UserHeader: "X-Auth-Request-Email", TokenHeader: "X-Forwarded-Access-Token", Profiles: fakeProfiles{}, SeerrURL: "https://seerr.example.org/"}, slog.New(slog.DiscardHandler))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -138,6 +149,7 @@ func TestQueue(t *testing.T) {
 		"Lanterns", "сезон 1, эпизодов: 2", `value="25"`, "1 д 2 ч", `src="https://img/l.jpg"`, "сезоны: 1, 2",
 		"скачано, раскладываем",
 		`href="https://seerr.example.org/tv/15260"`, "ищем раздачу",
+		`id="q-tv-100-1"`,
 	} {
 		if !strings.Contains(body, want) {
 			t.Errorf("body lacks %q:\n%s", want, body)
@@ -214,5 +226,49 @@ func TestLeft(t *testing.T) {
 		if got := en.left(d); got != want[1] {
 			t.Errorf("en.left(%v) = %q, want %q", d, got, want[1])
 		}
+	}
+}
+
+func TestPageShowsTheProfile(t *testing.T) {
+	req := httptest.NewRequest("GET", "/", nil)
+	req.Header.Set("X-Auth-Request-Email", "jane@example.org")
+	req.Header.Set("X-Forwarded-Access-Token", "jane")
+	req.Header.Set("Accept-Language", "en")
+	_, body := serve(t, &fakeCatalog{}, req)
+	for _, want := range []string{"Jane Doe", `src="https://id.example.org/jane.png"`, "Очередь"} {
+		if !strings.Contains(body, want) {
+			t.Errorf("page lacks %q: the profile's name, picture, and its locale over the browser's", want)
+		}
+	}
+}
+
+func TestPickedLanguageIsKept(t *testing.T) {
+	rec := httptest.NewRecorder()
+	s, err := New(&fakeCatalog{}, Options{UserHeader: "X-Auth-Request-Email", TokenHeader: "X-Forwarded-Access-Token", Profiles: fakeProfiles{}}, slog.New(slog.DiscardHandler))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := signedIn(httptest.NewRequest("GET", "/lang?to=en", nil))
+	s.Handler().ServeHTTP(rec, req)
+	if rec.Code != http.StatusSeeOther {
+		t.Fatalf("code = %d, want 303", rec.Code)
+	}
+	cookies := rec.Result().Cookies()
+	if len(cookies) != 1 || cookies[0].Name != "lang" || cookies[0].Value != "en" {
+		t.Fatalf("cookies = %v", cookies)
+	}
+
+	page := signedIn(httptest.NewRequest("GET", "/", nil))
+	page.Header.Set("X-Forwarded-Access-Token", "jane")
+	page.AddCookie(cookies[0])
+	_, body := serve(t, &fakeCatalog{}, page)
+	if !strings.Contains(body, "Queue") {
+		t.Error("the picked language does not beat the profile's and the browser's")
+	}
+
+	rec = httptest.NewRecorder()
+	s.Handler().ServeHTTP(rec, signedIn(httptest.NewRequest("GET", "/lang?to=auto", nil)))
+	if c := rec.Result().Cookies(); len(c) != 1 || c[0].MaxAge >= 0 {
+		t.Errorf("auto does not forget the pick: %v", c)
 	}
 }

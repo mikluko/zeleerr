@@ -6,12 +6,23 @@
 <meta name="htmx-config" content='{"responseHandling":[{"code":"204","swap":false},{"code":"...","swap":true}]}'>
 <title>{{t "title"}}</title>
 <script src="/static/htmx.min.js"></script>
+<script src="/static/idiomorph-ext.min.js"></script>
 <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <header>
   <h1>{{t "title"}}</h1>
-  <span class="user">{{.}}</span>
+  <div class="viewer">
+    <nav class="langs">
+      <a href="/lang?to=ru"{{if and .Chosen (eq .Lang "ru")}} class="on"{{end}}>RU</a>
+      <a href="/lang?to=en"{{if and .Chosen (eq .Lang "en")}} class="on"{{end}}>EN</a>
+      <a href="/lang?to=auto"{{if not .Chosen}} class="on"{{end}}>{{t "auto"}}</a>
+    </nav>
+    {{- with .Viewer}}
+    {{- if .Picture}}<img class="avatar" src="{{.Picture}}" alt="">{{end}}
+    <span class="user" title="{{.Email}}">{{or .Name .Email}}</span>
+    {{- end}}
+  </div>
 </header>
 <main>
   <section>
@@ -24,7 +35,7 @@
   </section>
   <section>
     <h2>{{t "queue"}}</h2>
-    <div id="queue" hx-get="/queue" hx-trigger="load, every 5s">
+    <div id="queue" hx-get="/queue" hx-trigger="load, every 5s" hx-ext="morph" hx-swap="morph:innerHTML">
       <p class="muted">…</p>
     </div>
   </section>
@@ -70,7 +81,8 @@
 {{- if not .}}<p class="muted">{{t "queue empty"}}</p>{{end}}
 <ul class="downloads">
 {{- range .}}
-  <li data-media-type="{{.MediaType}}" data-tmdb-id="{{.TMDBID}}">
+  <li id="q-{{.MediaType}}-{{.TMDBID}}-{{.Season}}" data-media-type="{{.MediaType}}" data-tmdb-id="{{.TMDBID}}">
+    {{- if .Poster}}<img src="{{.Poster}}" alt="" loading="lazy">{{else}}<div class="noposter"></div>{{end}}
     <div class="progress">
       <div class="line">
         <a class="name" href="{{seerr .MediaType .TMDBID}}">{{.Name}}</a>{{if .Season}} <span class="muted">{{t "season" .Season .Episodes}}</span>{{else if .Seasons}} <span class="muted">{{seasons .Seasons}}</span>{{end}}
@@ -80,7 +92,6 @@
       <progress max="100" value="{{percent .Progress}}">{{percent .Progress}}%</progress>
       {{- end}}
     </div>
-    {{- if .Poster}}<img src="{{.Poster}}" alt="" loading="lazy">{{else}}<div class="noposter"></div>{{end}}
   </li>
 {{- end}}
 </ul>

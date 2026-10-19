@@ -5,7 +5,12 @@
   font-family: system-ui, sans-serif;
 }
 body { margin: 0 auto; max-width: 56rem; padding: 1rem; }
-header { display: flex; align-items: baseline; justify-content: space-between; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.viewer { display: flex; align-items: center; gap: .6rem; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.langs { display: flex; gap: .4rem; font-size: .8rem; margin-right: .6rem; }
+.langs a { color: var(--muted); }
+.langs a.on { color: inherit; font-weight: 600; }
 h1 { font-size: 1.5rem; }
 h2 { font-size: 1.2rem; margin-top: 2rem; }
 h3 { font-size: 1rem; margin: 0; }
