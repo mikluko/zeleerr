@@ -146,7 +146,7 @@ func (c *Catalog) UserID(ctx context.Context, email string) (int, error) {
 // Search finds movies and series by name; people are left out.
 func (c *Catalog) Search(ctx context.Context, query string) ([]Title, error) {
 	lang := "ru"
-	res, err := c.seerr.GetSearchWithResponse(ctx, &seerr.GetSearchParams{Query: query, Language: &lang})
+	res, err := c.seerr.GetSearchWithResponse(ctx, &seerr.GetSearchParams{Query: query, Language: &lang}, spacesAsPercent20)
 	if err != nil {
 		return nil, fmt.Errorf("catalog: search: %w", err)
 	}
@@ -305,6 +305,14 @@ func (c *Catalog) Queue(ctx context.Context) ([]Download, error) {
 
 	sort.SliceStable(out, func(i, j int) bool { return out[i].Progress < out[j].Progress })
 	return out, nil
+}
+
+// spacesAsPercent20 works around Seerr refusing a query that encodes a space
+// as "+", the way url.Values does, with 400 "must be url encoded". A "+" typed
+// by the user is already "%2B", so every "+" left is a space.
+func spacesAsPercent20(_ context.Context, req *http.Request) error {
+	req.URL.RawQuery = strings.ReplaceAll(req.URL.RawQuery, "+", "%20")
+	return nil
 }
 
 func asUser(id int) seerr.RequestEditorFn {

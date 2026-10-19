@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -134,7 +135,7 @@ func TestSearchKeepsMoviesAndSeries(t *testing.T) {
 	}}
 	c := newCatalog(t, s, nil, nil)
 
-	got, err := c.Search(context.Background(), "миядзаки")
+	got, err := c.Search(context.Background(), "хаяо миядзаки")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -150,8 +151,11 @@ func TestSearchKeepsMoviesAndSeries(t *testing.T) {
 			t.Errorf("title %d = %+v, want %+v", i, got[i], want[i])
 		}
 	}
-	if q := s.requests[0].URL.Query(); q.Get("query") != "миядзаки" || q.Get("language") != "ru" {
+	if q := s.requests[0].URL.Query(); q.Get("query") != "хаяо миядзаки" || q.Get("language") != "ru" {
 		t.Errorf("query = %v", q)
+	}
+	if raw := s.requests[0].URL.RawQuery; strings.Contains(raw, "+") {
+		t.Errorf("raw query %q encodes a space as +, which Seerr refuses", raw)
 	}
 }
 
